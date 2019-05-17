@@ -89,7 +89,7 @@
   1. stage의 환경 설정
 
      |이름|자료형|역할|
-     |:==:|:====:|:===|
+     |:---:|:---:|:--- |
      |#services|object|프로세서간 공유가 필요한 네트워크 주소|
      |#license|object|라이센스 설정 정보|
      |#router|array|라우팅 정보 설정|
@@ -664,7 +664,7 @@ return {
         1. 요청
 
           |컬럼명|자료형|설명|
-          |:====:|:====:|:===|
+          |---|---|---|
           |url|string|요청하는 URL|
           |header|object| { NAME = VALUE } 형태로 헤더 설정|
           |data|string, object| POST로 전송할 데이터|
@@ -673,7 +673,7 @@ return {
 
         2. 반환
           |컬럼명|자료형|설명|
-          |:====:|:====:|:===|
+          |---|---|---|
           |url|string|요청된 URL|
           |redirect_url|string|리다이렉트된 URL|
           |effective_url|string|처리된 URL|
@@ -684,7 +684,7 @@ return {
 
           * data 정보
             |컬럼명|자료형|설명|
-            |:====:|:====:|:===|
+            |---|---|---|
             |type|string|데이터 형태|
             |length|number|data의 길이|
             |download_speed|number|다운로드 속도|
@@ -730,7 +730,7 @@ return {
     설정되는 실행함수 내에서는 *_WAITFOR* 로 정의되는 전역 변수를 가지고 있습니다. 해당 변수에는 메시지의 발생 정보를 포함하고 있습니다.
 
        |순서|자료형|설명|
-       |:==:|:====:|:===|
+       |---|---|---|
        |0|string|메시지ID|
        |1|object|메시지를 발생시킨 서버 정보|
        |2|string|메시지를 반환 받을 stage|
@@ -792,7 +792,7 @@ return {
        * 처리 함수(*F*, *F1*, *F2*) - function (t1, edge_values, column_name, new_value)
 
        |조건|설정|
-       |:==:|:==:|
+       |---|---|
        |값의 변경에 대한 처리|컬럼명 = *F* |
        |특정 조건에 대한 설정|컬럼명 = { V1, V2, ..., *F1*, N1, N2, ..., *F2* }|
 
@@ -871,7 +871,7 @@ return {
     로그 메시지 *s*에 다음과 같은 문장이 포함되는 경우 변경되어 출력합니다.
 
     | 문장 | 변경되는 값 |
-    |:======|==|
+    |---|---|
     | %l  |**%F [%M:%L]** |
     | %F  |  파일 이름 |
     | %M  |  함수 이름 |
@@ -883,7 +883,7 @@ return {
     기본적으로 제공되는 로그 레벨은 다음과 같습니다. (log4cxx.out의 기본 로그 레벨은 info와 동일합니다)
 
     | 로그 레벨 | 설명 |
-    |======|======|
+    |---|---|
     | info | 정보 (out)|
     | warn | 경고 |
     | error | 오류 |
@@ -921,7 +921,7 @@ return {
     
     *s*는 uri 형태의 정보를 가지고 있습니다.
       | 네트워크 |  네트워크 |  패킷 설정 | 비고 |
-      |=========:|:=========:|:==========|:=====:|
+      |---|---|---|---|
       |   tcp:// | *IP*:*PORT*   | ?packet=*IN*:*OUT* | 캐싱 사용 가능 |
       |   udp:// | *IP*:*PORT*   | - | 캐싱 무시 |
 
@@ -939,7 +939,7 @@ return {
     > *socket*에서 다음의 추가 정보를 읽을수 있습니다.
 
       | 이름 | 자료형 | 설명 |
-      |:====:|:======:|:=====|
+      |---|---|---|
       |id|i|소캣 번호|
       |crypto|b|암호화 유무|전달되는 데이터의 암호화 유무를 지정|
       |errno|i|오류 번호|
@@ -949,7 +949,7 @@ return {
     > *socket*에 다음 정보를 설정할수 있습니다.
 
       | 이름 | 자료형 | 설명 |
-      |:====:|:======:|:=====|
+      |---|---|---|
       |expire|i|데이터가 발생되지 않을때 소켓을 닫을 시간 (msec)|
       |commit|i|데이터 전송 간격 (msec)|
       |crypto|s|암호화 공개키(CBC/RIJNDAEL 알고리즘)|
@@ -993,7 +993,7 @@ return {
     
     *s*는 uri 형태의 정보를 가지고 있습니다. -- 연결 지향성이라 tcp만 허용됩니다
       | 네트워크 |  네트워크 |  패킷 설정 | 비고 |
-      |=========:|:=========:|:==========|:=====:|
+      |:---:|:---:|:---:|:---|
       |   tcp:// | *IP*:*PORT*   | ?packet=*IN*:*OUT* | 캐싱 사용 가능 |
 
     > *packet*에 대해
@@ -1007,7 +1007,7 @@ return {
     > *socket*에서 다음의 추가 정보를 읽을수 있습니다.
 
       | 이름 | 자료형 | 설명 |
-      |:====:|:======:|:=====|
+      |---|---|---|
       |id|i|소캣 번호|
       |crypto|b|암호화 유무|전달되는 데이터의 암호화 유무를 지정|
       |errno|i|오류 번호|
@@ -1017,7 +1017,7 @@ return {
     > *socket*에 다음 정보를 설정할수 있습니다.
 
       | 이름 | 자료형 | 설명 |
-      |:====:|:======:|:=====|
+      |---|---|---|
       |expire|i|데이터가 발생되지 않을때 소켓을 닫을 시간 (msec)|
       |commit|i|데이터 전송 간격 (msec)|
       |crypto|s|암호화 공개키(CBC/RIJNDAEL 알고리즘)|
@@ -1151,7 +1151,7 @@ return {
 
     *t*를 사용하는 경우에 다음의 항목이 추가됩니다.
        |이름|자료형|값|비고|
-       |:==:|:====:|:=:|:=:|
+       |---|---|---|---|
        |family|i| 네트워크 형태 | 2 - IPv4, 10 - IPv6 |
        |addr|s|연결 주소| |
        |port|i|포트 번호| |
@@ -1183,7 +1183,7 @@ return {
 
     *t*에 설정된 값으로 변경 합니다.
        |이름|자료형|값|비고|
-       |:==:|:====:|:=:|:=:|
+       |---|---|---|---|
        |addr|s|연결 주소| |
        |port|i|포트 번호| |
        |scope_id|i|IPv6의 scope id| |
@@ -1289,7 +1289,7 @@ return {
     *s*로 설정되는 연결정보는 *ODBC Connection String* 또는 설정 파일의 *%odbc*에 정의된 이름을 지정합니다.
 
       |데이터베이스|참고 사이트 |
-      |:==========:|:==========:|
+      |---|---|
       | mysql| [Connector/ODBC](https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-configuration-connection-without-dsn.html)|
       | mssql| [DSN 및 연결 문자열 키워드 및 특성](https://docs.microsoft.com/ko-kr/sql/connect/odbc/dsn-connection-string-attribute?view=sql-server-2017)|
 
@@ -1299,7 +1299,7 @@ return {
     다음에 나열되는 설정은 추가설정입니다.
 
       | 이름 | 자료형 | 설명 |
-      |:====:|:======:|:=====|
+      |---|---|---|
       | .executeTimeout | i | SQL 실행 타임 아웃 값 (msec) |
       | .connectionTimeout | i | 데이터베이스 연결 타임 아웃 값 (msec) |
       | .loginTimeout | i | 로그인 타임 아웃 값 (msec) |
@@ -1457,7 +1457,7 @@ return {
     *t*는 정의할때 처음 위치에는 SQL 명령을 다음 위치 부터는 SQL 명령에 포함된 ? 에 지정할 SQL 자료형을 설정하면 됩니다.
 
     | format | SQL TYPE | 값 형태 |
-    |:========:|:=========:|:=====:|
+    |---|---|---|
     | W | WVARCHAR | 제한없음 |
     | w | WCHAR | 제한없음 |
     | C | VARCHAR | 제한없음 |
@@ -1512,7 +1512,7 @@ return {
     *t2*는 다음 테이블의 변경된 로그 정보를 가지게 됩니다.
 
     |컬럼명|자료형|설명|
-    |:====:|:====:|:===|
+    |---|---|---|
     |table|s|테이블명|
     |action|i|2: 업데이트, 4: 추가, 8: 삭제  |
     |where|t| { "COLUMN": 값, ... }&nbsp; |
@@ -1620,6 +1620,236 @@ return {
 
 >#### <a id="adapter-close"></a> adapter.close()
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 데이터베이스 연결을 닫습니다.
+  * **입력** <span style="white-space: pre;">&#9;&#9;</span> 없음
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 없음
+  * **설명**<br>    
+    
+    *odbc.new()* 로 연결된 정보를 해제 합니다. 
+    > 해당 함수를 호출하지 않아도 처리된 함수를 벗어나면 자동으로 해제됩니다.
+    
+    해제 될때, 완료되지 않은 트랜젝션은 *adapter.commit()* 이 됩니다.
+    
+  * 참고
+    * [odbc.new](#odbc-new)
+    * [adapter.commit](#adapter-commit)
+
+  * **예제**
+    ```lua
+       ...
+       adp.close()
+    ```
+
+>### <a id="resultset-ns"></a> resultset
+
+>#### <a id="resultset-fetch"></a> resultset.fetch( \[t | s] \[, function (row)])
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 실행된 명령에서 결과를 얻습니다.
+  * **입력** 
+    * t - 결과의 정렬을 원하는 컬럼 목록
+    * s - 정렬을 원하는 컬럼명
+    * function (row) - *(생략 가능)* 결과에 대한 콜백 함수
+  * **반환** 
+    * f가 정의된 경우 - f 의 반환 값
+    * f가 정의되지 않은 경우 - row 
+  * **설명**<br>    
+
+    *adapter.execute* 에서 실행된 결과를 얻기 위한 함수로, 주로 "SELECT"이후에 사용되는 명령입니다. 해당 명령을 통해 얻어진 결과를 테이블 형태로 직접 접근하도록 변환합니다.
+
+    > *s* 또는 *t*에 지정될수 있는 컬럼은 SELECT에서 얻어진 컬럼 명이어야 합니다.    
+    > *s* 또는 *t*의 컬럼명에 *$*를 지정하게 되면 ROW 일련번호를 기준으로 결과를 얻어 옵니다. (0, 1, 2...)
+    
+    만약, *s* 또는 *t*가 지정되지 않는 경우 마지막 정보만 반환됩니다.
+
+    row의 컬럼명은 SELECT를 통해 얻어진 컬럼을 사용합니다.
+    > 만약, *adp.execute("SELECT 1 as B")* 로 요청을 하면 컬럼명은 "B"가 됩니다.
+    
+    ```lua
+       ...
+       local rows = rs.fetch({ "userid", "$" });
+
+       print("USERNAME", rows["USER_ID"][0].username)
+    ```
+
+    반환된 row 정보는 테이블에 접근하듯이 사용할수 있으며 값을 추가 하거나, 수정 및 삭제를 할수 있습니다. 
+    > 해당 처리 후 *resultset.apply* 또는 *adapter.apply*를 통해 데이터베이스에 적용 할수 있습니다.
+
+  * 참고
+    * [odbc.new](#odbc-new)
+    * [adapter.execute](#adapter-execute)
+    * [adapter.apply](#adapter-apply)
+    * [resultset.apply](#resultset-apply)
+
+  * **예제**
+    ```lua
+       ...
+       local rs = adp.execute("SELECT 1 as sum");
+       local rows = rs.fetch();
+       for k, v in pairs(rows) do
+            print("SELECT", k, v);
+       end       
+    ```
+
+>#### <a id="resultset-erase"></a> resultset.erase(row, [s | t])
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 얻어진 결과에서 *t* 를 삭제합니다.
+  * **입력** 
+    * row - resultset.fetch()의 반환 객체에 연결된 객체
+    * s - 삭제를 원하는 객체의 값
+    * t - 삭제를 원하는 객체가 위치한 값의 진입 순서
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 제거된 갯수
+  * **설명**<br>    
+
+    *s* 는 row에서 직접 접근이 가능한 값을 지정하며,<br>
+    *t* 는 row에서 여러 단계에 걸쳐서 접근해야 하는 위치의 값을 지정하는데 사용됩니다.
+
+    > row는 *resultset.fetch()* 의 결과 뿐만 아니라 row[*KEY*] 로 반환된 객체도 가능합니다. (값은 불가능)
+
+       예를 들어,
+       | 0 | 1 | 2 | 3 | ... |
+       |:=:|:=:|:=:|:=:|:=:|
+       | A0 | B0 | C0 | D0 | ... |
+       | A0 | B0 | C1 | D1 | ... |
+
+       로 저장된 값에서 D1을 삭제하기 위해서는 
+       ```lua
+          rs.erase(rows, { "A0", "B0", "C1", "D1" })
+       ```
+
+       "B0"의 모든 하위 값을 삭제하고자 한다면
+       ```lua
+          rs.erase(rows, { "A0", "B0" })
+       ```
+       
+       으로 삭제 할수 있습니다.
+
+       물론, 삭제하는데 있어 
+       ```lua
+          rows.A0.B0.C1.D1 = nil
+          -- 동일한 rows["A0"]["B0"]["C1"]["D1"] = nil
+       ```
+
+       이나, 
+       ```lua
+          rows.A0.B0 = nil
+          -- 동일한 rows["A0"]["B0"] = nil
+       ```
+       도 동일한 결과를 같습니다.
+
+       해당 함수를 존재 이유는 하위 객체 접근에 대한 편의성을 위해 제공됩니다.
+
+  * 참고
+    * [odbc.new](#odbc-new)
+    * [adapter.execute](#adapter-execute)
+    * [adapter.apply](#adapter-apply)
+    * [resultset.apply](#resultset-apply)
+
+  * **예제**
+    ```lua
+       ...
+       local rs = adp.execute("SELECT 1 as sum");
+       local rows = rs.fetch();
+       for k, v in pairs(rows) do
+            print("SELECT", k, v);
+       end       
+    ```
+
+>#### <a id="resultset-apply"></a> resultset.apply(row \[, table] \[, function (t1, t2)])
+
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  변경된 항목을 적용합니다.
+  * **입력** 
+    * row - resultset.fetch()를 통해 반환된 객체와 연결된 객체
+    * s - *(생략 가능)* 적용할 테이블 명
+    * function (t1, t2) - *(생략 가능)* 변경 정보를 전달할 함수
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> function (t1, t2)의 반환값
+  * **설명**<br>    
+    
+    SELECT 이후 *resultset.fetch*를 사용해 얻은 결과를 수정한 경우, 해당 내용을 데이터베이스에 적용해야 하는경우 사용될 수 있습니다.
+    > row는 *resultset.fetch()* 의 결과 뿐만 아니라 row[*KEY*] 로 반환된 객체도 가능합니다. (값은 불가능)
+
+    변경된 내용은 값의 변경 유무에 따라서 INSERT,UPDATE,DELETE로 처리가 됩니다.<br>
+    그에 대한 정보는 *function (t1, t2)* 로 전달이 되며 *t1*은 자동증가되는 컬럼이 추가되는 경우 추가된 값을,
+    *t2*는 다음 테이블의 변경된 로그 정보를 가지게 됩니다.
+
+    |컬럼명|자료형|설명|
+    |---:|:---:|---|
+    |table|s|테이블명|
+    |action|i|2: 업데이트, 4: 추가, 8: 삭제  |
+    |where|t| { "COLUMN": 값, ... }&nbsp; |
+    |value|t| { "o": 이전값, "n": 새로운값, "t": SQL_TYPE }&nbsp;|
+
+    전달 되는 정보를 바탕으로 로깅을 할수 있습니다.
+
+    * **주**
+
+      1. 데이터베이스 종류에 따라 테이블 명을 확인할수 없어 명시가 필요한 경우가 있습니다.
+         > MS-SQL을 사용하는 경우에는 테이블 명을 명시해야 합니다.
+      1. SELECT 쿼리에서 JOIN 쿼리는 테이블 명을 명시해야 합니다.
+      1. 적용되는 컬럼이 *s* (테이블명)에 포함되지 않은 경우 SQL오류가 발생될수 있습니다.
+
+  * 참고
+    * [odbc.new](#odbc-new)
+    * [adapter.execute](#adapter-execute)
+    * [adapter.apply](#adapter-apply)
+
+  * **예제**
+    ```lua
+       ...
+        rs.apply(rows["userid"], "USERS")
+    ```
+
+>## <a id="process-property"></a> process
+
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  구동중인 프로세서의 정보를 확인합니다.
+  * **설명**<br>    
+    프로세서에 대한 정보를 확인할수 있습니다.  
+
+    * 읽을수 있는 정보
+    |이름|자료형|설명|
+    |:---:|:---:|:---|
+    |id|i|프로세서 아이디|
+    |tick|d|초단위 시간|
+    |args|t|프로그램 실행 인자|
+    |stage|i|스테이지 번호|
+    |%*NAME*|v|환경설정에 정의된 값|
+    |$*NAME*|v|설정 파일에 정의된 값|
+    |*NAME*|v|사용자 정의 값|
+
+    * 기록할수 있는 정보
+    |이름|자료형|설명|
+    |:---:|:---:|:---|
+    |title|s|프로세서의 이름 변경(ps로 표시되는)|
+    |$|s|설정 정보를 변경(JSON 형식)|
+    |*NAME*|v|사용자 정의 값
+
+  * 참고
+    * [thread](#thread-property)
+
+  * **예제**
+    ```lua
+      print("LANG", process["%LANG"])
+    ```
+
+>## <a id="thread-property"></a> thread
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  구동중인 쓰레드 정보를 확인합니다.
+  * **설명**<br>    
+    현재 구동중인 쓰레드에 대한 정보를 확인할수 있습니다.  
+
+    * 읽을수 있는 정보
+    |이름|자료형|설명|
+    |:---:|:---:|:---|
+    |id|i|쓰레드 아이디|
+    |tick|d|초단위 시간|
+    |*NAME*|v|사용자 정의 값|
+
+    * 기록할수 있는 정보
+    |이름|자료형|설명|
+    |:---:|:---:|:---|
+    |*NAME*|v|사용자 정의 값
+
+  * 참고
+    * [process](#process-property)
+
+  * **예제**
+    ```lua
+    ```
   * **입력** <span style="white-space: pre;">&#9;&#9;</span> 없음
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 없음
   * **설명**<br>    
