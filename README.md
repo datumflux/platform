@@ -1,5 +1,7 @@
 # STAGE for LUA
 
+*제품에 대한 자세한 정보는 [홈페이지](https://datumflux.co.kr) 에서 확인 하실수 있습니다.*
+
 >## 순서
 
 * [시작](#intro)
