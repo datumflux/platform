@@ -14,7 +14,8 @@
 
  stage는 서버간의 통신을 위한 영역이라면, broker는 클라이언트 또는 타 서버와의 연동을 위한 처리를 제공합니다.
 
- 기본적인 통신 방식은 BSON을 통해 데이터를 전달 받을수 있도록 구성되어 있습니다.
+ 기본적인 통신 방식은 [BSON](http://bsonspec.org/)을 통해 데이터를 전달 받을수 있도록 구성되어 있습니다.
+ > BSON는 JSON을 이진화하는 형태로 상호 변환이 가능한 직렬화 기법으로 데이터를 전달하는 효과적인 방법입니다.
 
 >#### <a id="broker-ready"></a> broker.ready(s, function (socket))
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *s*로 정의된 네트워크 연결을 대기 상태로 설정합니다.
