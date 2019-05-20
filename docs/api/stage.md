@@ -461,14 +461,91 @@
             |message|string|처리 결과|
             |time|number|처리된 경과 시간|
 
+     * route로 메시지 전달
+
+       전달되는 메시지를 필터링하여 전달 받을 수 있습니다.<br/>
+
+       > "route" stage에 *"subscript_id"* 로 전달하면, 전달 설정된  stage로 전달합니다. 메시지를 전달 할수 없는 상황이면 메시지를 소멸 됩니다. -- 만약, 해당 경우에 대한 callback 설정이 되어 있다면 결과를 반환 합니다. <p/>
+       > 메시지를 발생시키는 stage를 A, 메시지를 받으려고 "route"에 등록한 stage를 B라고 할때, B가 받은 메시지의 반환 주소는 A로 설정이 됩니다.
+
+       1. 라우팅 등록
+
+        > 설정되는 "callbac_id"는 중복이 허용됩니다.
+        > *stage.waitfor()* 로 설정되는 callbac_id를 의미합니다.
+
+        등록되는 callback 함수는 첫번째 인자로 요청한 subscribe_id가 전달됩니다.
+
+        ```lua
+          stage.waitfor("callback_id", function (id, arg)
+             ...
+          end)
+
+          stage.signal("route:@", {
+            "subscribe_id_0": "callbac_id",
+            "subscribe_id_1": "callbac_id",
+            "subscribe_id_2": "callbac_id",
+            "subscribe_id...": "callbac_id",
+          })
+        ```
+
+       2. 라우팅 일시 정지/해제
+
+        > 만약, false로 해당 "subscribe_id"를 설정하면 다시 true로 설정하기 전까지 메시지를 받을 수 없습니다.<br/>
+        > msec를 설정하는 경우, 해당 시간이 경과 한 이후에 다시 활성화 됩니다.
+
+        ```lua
+          stage.signal("route:@", {
+            "subscribe_id": true | false | msec
+          })
+
+          stage.signal("route:@", true | false | msec)
+        ```
+
+       3. 라우팅 요청 해제
+
+        ```lua
+          stage.signal("route:@", {
+            "subscribe_id": nil
+          })
+
+          stage.signal("route:@", nil)
+        ```
+
+       3. 라우팅 메시지 전달
+
+        ```lua
+          stage.signal("route:subscribe_id", value)
+
+          stage.signal("route:subscribe_id!fail_callback_id", value)
+        ```
+
+        subscribe_id 수신하고자 하는 stage가 여러 개인 경우 받을 수 있는 조건이 되는 하나의 stage에 전달됩니다.<p/> 
+        만약, 모든 stage에 전달하고자 한다면 *"route:*subscribe_id"* 로 전달 하면 됩니다.
+
+        > *"!fail_callback_id"* 는 메시지를 받을 수 있는 stage가 없는 경우 반환되는 callback_id 입니다. 
+
+
   * **예제**
     ```lua
+       stage.waitfor("fetch", function (id, v) 
+          ...
+          stage.signal(nil, "FEEDBACK")
+       end)
+
+       stage.waitfor("r__fail", function (id, v)
+          print("ROUTE FAIL", id, v)
+       end)
+
        ...
        stage.waitfor("message", function (_self, v)
           print("MESSAGE", v)
        end, {...})
        ...
        stage.signal("message", "HELLO")
+       stage.signal("route:@", {
+          ["login"] = "fetch"
+       })
+       stage.signal("route:login!r__fail", "HELLO")
     ```
 
   * 참고
