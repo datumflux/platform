@@ -191,12 +191,14 @@
         print("STEP #3")
         ```
 
-     * 요청하는 stage_id를 포함하여 전달하고자 하는 경우에는 *+* 를 사용해 *s1* 을 구성할수 있습니다.
+     * 메시지를 보내는 현재 stage_id를 포함하여 전달하고자 하는 경우에는 *+* 를 사용해 *s1* 을 구성할수 있습니다.
      
           target_stage_id+메시지ID
 
-       이런 경우, stage.waitfor()에 동일 메시지ID라도 데이터를 요청한 stage 별로 분리 하여 처리할수 있습니다.
+       > "target_stage_id:current_stage_id:메시지ID" 로 전달 됩니다.
 
+       target_stage에서는 stage.waitfor()를 "current_stage_id:메시지ID"로 대기 설정하여 메시지를 처리 할 수 있습니다. 
+       
         ```lua
         stage.waitfor("stage:callback", function (v)
            print("STAGE ", v.msg)
@@ -207,7 +209,7 @@
         end)
 
         -- stage에세 전송 합니다.
-        stage.signal("stage+callback", {
+        stage.signal("process+callback", {
           ["msg"] = "HELLO"
         })
 
@@ -482,7 +484,15 @@
 
         등록되는 callback 함수는 첫번째 인자로 요청한 subscribe_id가 전달됩니다.
 
+        메시지를 처리하는 callback_id의 반환 결과를 return_id로 받을 수 있도록 설정 할 수 있습니다.
+
         ```lua
+          -- route에서 메시지 처리여부를 확인하기 위해 호출됨.
+          stage.waitfor("route:@", function (id, k)
+             -- id에 대해 처리를 원하는 경우
+             stage.signal(nil, k)
+          end)
+
           stage.waitfor("callback_id", function (id, arg)
              ...
           end)
@@ -505,7 +515,7 @@
             "subscribe_id": true | false | msec
           })
 
-          stage.signal("route:@", true | false | msec)
+          stage.signal("route:@", msec)
         ```
 
        3. 라우팅 요청 해제
@@ -518,19 +528,53 @@
           stage.signal("route:@", nil)
         ```
 
-       3. 라우팅 메시지 전달
+       4. 라우팅 메시지 전달
+
+        ```mermaid
+        graph LR;
+          START --> A(route:subscribe_id);
+          A --> END
+          A --> B(=return_callback)
+          B --> C
+          C --> END
+          A --> C(!fail_callback)
+          C --> B
+          B --> END
+        ```
 
         ```lua
           stage.signal("route:subscribe_id", value)
-
-          stage.signal("route:subscribe_id!fail_callback_id", value)
         ```
 
         subscribe_id 수신하고자 하는 stage가 여러 개인 경우 받을 수 있는 조건이 되는 하나의 stage에 전달됩니다.<p/> 
         만약, 모든 stage에 전달하고자 한다면 *"route:*subscribe_id"* 로 전달 하면 됩니다.
 
+        ```mermaid
+        sequenceDiagram
+          participant 요청 stage
+          participant route stage
+          participant 처리1 stage
+          participant 처리2 stage
+
+          요청 stage ->> route stage: "route:subscribe_id"
+          opt 직접 전달 요청
+             route stage -->> 처리1 stage: "처리 가능?"
+             route stage -->> 처리2 stage: "처리 가능?"
+             처리1 stage -->> route stage: "처리 가능"
+          end
+          route stage ->> 처리1 stage: "처리 요청"
+          처리1 stage ->> 요청 stage: "처리 결과"
+        ```
+
         > *"!fail_callback_id"* 는 메시지를 받을 수 있는 stage가 없는 경우 반환되는 callback_id 입니다. 
 
+       5. 라우팅 메시지 유지
+
+        ```lua
+          stage.signal("route:@", true)
+        ```
+
+        최소 30초 이내에 주기적으로 전달되어야 합니다. 만약, 전달되지 않는다면 route에서 제거됩니다.
 
   * **예제**
     ```lua
@@ -549,6 +593,12 @@
        end, {...})
        ...
        stage.signal("message", "HELLO")
+
+       stage.waitfor("route:@", function (id, v)
+         -- 만약, "route:" 에서 보내는 데이터를 처리되길 원하지 않는 경우에는 stage.signal()로 반환하지 않으면 됩니다.
+         stage.signal(nil, v)
+       end)
+
        stage.signal("route:@", {
           ["login"] = "fetch"
        })
@@ -812,5 +862,6 @@
 
   * **예제**
     ```lua
+      print(process.id .. ": Initialize... STAGE[" .. process.stage .. "]");
     ```
 
