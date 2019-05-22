@@ -12,3 +12,4 @@ end, { "from", "PROCESS" })
 
 --
 stage.signal("hello", { ["msg"] = "CALLBACK" })
+stage.signal("process+hello", { ["msg"] = "CALLBACK" })
