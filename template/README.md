@@ -56,8 +56,8 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
      [Windows 10에서 Linux 컨테이너](https://docs.microsoft.com/ko-kr/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux) 설치 방법을 통해 Docker를 설치 합니다.
 
      > #### Docker for Windows 설치 조건
-        1. Hyper-V 지원 필요
-        2. [docker hub](https://hub.docker.com/editions/community/docker-ce-desktop-windows)에서 계정 생성 필요
+     1. Hyper-V 지원 필요
+     2. [docker hub](https://hub.docker.com/editions/community/docker-ce-desktop-windows)에서 계정 생성 필요
 
 2. STAGE 플랫폼 설치
 
