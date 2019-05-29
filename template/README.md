@@ -12,36 +12,36 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
     > #### Ubuntu 18.04 LTS
 
       ##### Docker 설치 전 환경을 구성 합니다.
-      ```sh
-        $ sudo apt update
-        $ sudo apt install apt-transport-https ca-certificates curl software-properties-common
+      ```console
+      $ sudo apt update
+      $ sudo apt install apt-transport-https ca-certificates curl software-properties-common
       ```
       
       ##### Docker 를 설치 합니다.
-      ```sh
-        $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-        $ sudo apt update
-        $ sudo apt install docker-ce 
+      ```console
+      $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+      $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+      $ sudo apt update
+      $ sudo apt install docker-ce 
       ```
 
       ##### Docker 실행 여부를 확인 합니다.
-      ```sh
-        $ sudo systemctl status docker
+      ```console
+      $ sudo systemctl status docker
 
-        ● docker.service - Docker Application Container Engine
-        Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: e
-        Active: active (running) since Wed 2019-05-29 12:11:38 KST; 7h ago
-            Docs: https://docs.docker.com
-        Main PID: 1091 (dockerd)
-            Tasks: 15
-        CGroup: /system.slice/docker.service
-                └─1091 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/contain        
+      ● docker.service - Docker Application Container Engine
+      Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: e
+      Active: active (running) since Wed 2019-05-29 12:11:38 KST; 7h ago
+          Docs: https://docs.docker.com
+      Main PID: 1091 (dockerd)
+          Tasks: 15
+      CGroup: /system.slice/docker.service
+              └─1091 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/contain        
       ```
 
       ##### Docker 실행시 sudo 없이 실행하기 위해서
-      ```sh
-        $ sudo usermod -aG docker $USER
+      ```console
+      $ sudo usermod -aG docker $USER
       ```
       이후, 재 로그인을 하면 적용 됩니다.
 
@@ -63,7 +63,7 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
    1. docker hub에 있는 [STAGE:Platform](https://hub.docker.com/r/datumflux/stage)
 
       Windows에서는 CMD 또는 PowerShell을 통해, Linux에서는 쉘 환경에서
-        ```sh
+        ```console
         $ docker pull datumflux/stage
 
         Using default tag: latest
@@ -84,7 +84,7 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
       을 통해 설치를 합니다.
 
       설치 여부는
-        ```sh
+        ```console
         $ docker images
         REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
         datumflux/stage     latest              2ca8e4122aa4        About an hour ago   129MB
@@ -162,7 +162,7 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
 
         정상 실행 여부에 대한 확인을 위해
 
-        ```sh
+        ```console
         $ docker run -it --rm datumflux/stage
 
         2019-05-29 10:29:09,543 [INFO ] LOG4CXX: CONFIGURATION - 'conf/log4cxx.xml'
@@ -187,13 +187,13 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
 
         개발에 사용할 폴더 구성을 홈 디랙토리의 *"~/stage"* 에 하였다는 가정 하여 다음과 같이 실행 합니다.
 
-        ```sh
+        ```console
         $ docker run -it --rm -v $HOME/stage:/opt/stage datumflux/stage
         ```
 
         실행 결과를 확인 하실 수 있습니다. *start.lua*가 작성되지 않았다면 다음과 같은 메시지를 출력합니다.
 
-        ```sh
+        ```console
         2019-05-29 10:31:56,524 [INFO ] CLUSTER: READY - 14
         2019-05-29 10:31:56,524 [WARN ] start - '<unknown>'
         2019-05-29 10:31:56,525 [INFO ] READY 14: CLUSTER [42405 port]
@@ -267,7 +267,7 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
 
     ##### 2. Linux
     
-    ```sh
+    ```console
     $ docker run -it --rm -v $HOME/stage:/opt/stage datumflux/stage
     ```
 
@@ -293,7 +293,7 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
 
         ##### 2. Linux
         
-        ```sh
+        ```console
         > docker run -it --rm -v $HOME/stage:/opt/stage datumflux/stage
         ```
 
@@ -344,10 +344,3 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
        SELECT SCOPE_IDENTITY()
        ```
        의 형태로 마지막에 추가된 데이터의 값을 반환 합니다.
-
-
-
-
-
-    
-
