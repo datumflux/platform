@@ -1,6 +1,7 @@
 ## Quick-Start: Docker
 
-STAGE 플랫폼을 통해 서버를 개발하는 과정을 설명하고자 합니다. 해당 내용은 대부분의 서버 개발에 공통적인 부분으로 프로젝트의 성격상 달라지는 부분은 각 항목 별로 다시 설명 드릴 예정입니다.
+STAGE 플랫폼을 통해 서버를 개발하는 과정을 설명하고자 합니다. <br>
+해당 내용은 대부분의 서버 개발에 공통적인 부분으로 프로젝트의 성격상 달라지는 부분은 각 항목 별로 다시 설명 드릴 예정입니다.
 
 STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 이상의 환경에서 실행이 되도록 최적화 되어 있습니다.
 
@@ -48,15 +49,15 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
 
     > #### Windows
 
-    > Windows 10이상의 경우에 Windows Subsystem Linux를 사용하지 않는 주된 이유는 WSL이 Linux의 기능 구현 중 *IPC* 에 관련된 부분과 *UNIX 내부 통신* 을 정상적으로 지원하지 않음에 있습니다. *-- 정상적으로 이용이 가능해지면 다시 한번 공유해 드리도록 하겠습니다.*
+      > Windows 10이상의 경우에 Windows Subsystem Linux를 사용하지 않는 주된 이유는 WSL이 Linux의 기능 구현 중 *IPC* 에 관련된 부분과 *UNIX 내부 통신* 을 정상적으로 지원하지 않음에 있습니다. *-- 정상적으로 이용이 가능해지면 다시 한번 공유해 드리도록 하겠습니다.*
 
-    여기에서는 Docker for Windows를 사용하여 개발하는 방법을 설명 하도록 하겠습니다.
+      여기에서는 Docker for Windows를 사용하여 개발하는 방법을 설명 하도록 하겠습니다.
 
-   [Windows 10에서 Linux 컨테이너](https://docs.microsoft.com/ko-kr/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux) 설치 방법을 통해 Docker를 설치 합니다.
+     [Windows 10에서 Linux 컨테이너](https://docs.microsoft.com/ko-kr/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux) 설치 방법을 통해 Docker를 설치 합니다.
 
-   > #### Docker for Windows 설치 조건
-      1. Hyper-V 지원 필요
-      2. [docker hub](https://hub.docker.com/editions/community/docker-ce-desktop-windows)에서 계정 생성 필요
+     > #### Docker for Windows 설치 조건
+        1. Hyper-V 지원 필요
+        2. [docker hub](https://hub.docker.com/editions/community/docker-ce-desktop-windows)에서 계정 생성 필요
 
 2. STAGE 플랫폼 설치
 
