@@ -224,12 +224,22 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
        부분으로, 설정은 **tcp 통신이 가능한 8801 포트를 사용함** 을 뜻합니다.<br>
        **0.0.0.0** 은 IPv4로 접속되는 IP 연결을 받겠다는 의미입니다.
 
-       만약, IPv6로 들어오는 연결을 받고자 하는 경우에는 **[::]** 으로 지정 하면 됩니다. 
-
        설정된 정보는 스크립트의 다음 처리와 1:1 대응 됩니다.
 
         ```lua
             broker.ready("tcp://0.0.0.0:8801?bson=2k,4k", ...)
+        ```
+
+       만약, IPv6로 들어오는 연결을 받고자 하는 경우에는 **[::]** 으로 지정 하면 됩니다. 대부분은 IPv6를 지정하면 IPv4도 지원합니다.
+
+        ```json
+            "#services": {
+                "tcp":["[::]:8801"]
+            },
+        ```
+
+        ```lua
+            broker.ready("tcp://[::]:8801?bson=2k,4k", ...)
         ```
 
    3. 클러스터링 설정
@@ -257,6 +267,56 @@ STAGE 플랫폼은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 �
       즉, 단방향으로 요청이 되며 양방향 설정을 위해서는 Master와 Slave가 서로의 IP로 연결을 구성하면 가능합니다.
 
       > 클러스터링 구성은 UDP를 통해 전달이 되며 네트워크를 사용합니다. 그러나, 내부 통신은 UNIX 통신을 통해 네트워크의 부하를 발생시키지 않습니다.
+
+       1. 클러스터링 이더넷 장치 지정
+
+           클러스터링이 구성되면 다른 하드웨어에 위치한 STAGE:플랫폼에 연결이 되며 처리된 결과를 다시 받기 위해서는 외부 통신이 가능한 IPv4 주소를 얻어야 합니다.
+
+           만약, 클러스터링이 구성되는 하드웨어의 이더넷 장치가 두개 이상이라고 한다면 어떠한 장치가 외부 통신이 가능한지 설정할 필요가 있습니다.
+
+            ```console
+            $ ifconfig
+            docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+                    inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+                    ether 02:42:98:71:da:f1  txqueuelen 0  (Ethernet)
+                    ...
+
+            eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+                    inet 10.211.55.10  netmask 255.255.255.0  broadcast 10.211.55.255
+                    inet6 fdb2:2c26:f4e4:0:f99e:7ba8:b20f:6122  prefixlen 64  scopeid 0x0<global>
+                    inet6 fe80::206a:651e:6fe7:3581  prefixlen 64  scopeid 0x20<link>
+                    ether 00:1c:42:8b:69:83  txqueuelen 1000 
+                    ...
+
+            lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+                    inet 127.0.0.1  netmask 255.0.0.0
+                    inet6 ::1  prefixlen 128  scopeid 0x10<host>
+                    loop  txqueuelen 1000  (Local Loopback)
+                    ...
+           ```
+
+           명령을 통해 확인한 이더넷 장치는 **eth0** 이므로,
+
+           설정에
+             ```json
+                 "#cluster": [ ":eth0", 9801, "IP:9801" ],
+             ```
+
+           로 지정하면 STAGE:플랫폼은 *eth0*의 *inet 10.211.55.10*를 사용합니다.
+
+       2. FAIL-OVER STAGE:플랫폼 지정
+
+          STAGE:플랫폼은 메시지를 처리할 수 있는 프로세서를 찾는 과정을 라우팅이라고 합니다. 이 과정 중에 메시지를 처리할 수 있는 프로세서가 없다면 메시지는 폐기 됩니다.
+
+          이러한 경우에, 메시지를 처리할 수 있는 *FAIL-OVER STAGE:플랫폼*을 설정하는 옵션으로 해당 메시지를 전달 할 수 없는 경우에만 사용 됩니다.
+
+          설정에
+            ```json
+                "#cluster": [ ":eth0", "=FAIL-OVER_IP:9801", 9801, "IP:9801" ],
+            ```
+
+          지정을 하면 메시지를 폐기하는 대신 *FAIL-OVER_IP*로 전달합니다.
+          > *FAIL-OVER_IP*는 연결되는 형태로 구성이 가능합니다.
 
 3. 스크립트 작성
 
