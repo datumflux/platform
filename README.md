@@ -109,7 +109,11 @@
 
        1. 연결할 상대방 서버 주소를 지정합니다 <br>
           - 다른 서버로 정보를 보낼 수 있습니다.
-          > *"=서버주소:포트번호"* 를 지정합니다.
+          > *"서버주소:포트번호"* 를 지정합니다.
+
+       1. 외부 서버와 공유되는 이더넷 IP
+          - 외부 서버에로 보내는 데이터를 수신하기 위한 IP를 지정하거나, 해당 IP를 가지고 있는 이더넷 장치의 이름을 지정합니다.
+          > *":장치명"* 또는 *":IPv4"* 를 지정합니다.
 
        1. 백업 클러스터 연결을 구성합니다.<br>
           - 현재 서버에 stage_id가 존재하지 않거나 문제가 있다면 연결된 서버에 처리 요청을 전송합니다.
@@ -142,9 +146,9 @@ exec ./single -c - $* << EOF
     "#services": {
         "tcp":["0.0.0.0:8081"]
     },
-    "#license": { "DATUMFLUX CORP.": ["xxxxxxxxxxxxxxxxxxxxx"] },
+    "#license": [ "DATUMFLUX CORP.", "xxxxxxxxxxxxxxxxxxxxx"],
     "#router": [ 1500 ],
-    "#cluster": [ 18081, "127.0.0.1:28081"],
+    "#cluster": [ ":eth0", 18081, "127.0.0.1:28081"],
     "#threads": [ 10, 10000 ],
     "#startup":[ 
         ["=lua+stage", "=index+rank", "=curl+agent", "=route+route"]
@@ -154,7 +158,7 @@ exec ./single -c - $* << EOF
         "user-agent": "STAGE Agent/1.0"
     },
 
-    "=lua+stage": {
+    "=lua": {
         "%preload": "preload",
         "%package": [ "devel", "v1" ],
         "%odbc":  {
