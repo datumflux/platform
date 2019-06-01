@@ -1,10 +1,17 @@
-## Quick-Start: Docker
+## Quick-Start
 
 **STAGE:플랫폼** 을 통해 서버를 개발하는 과정을 설명하고자 합니다. <br>
+
 해당 내용은 대부분의 서버 개발에 공통적인 부분으로 프로젝트의 성격상 달라지는 부분은 각 항목 별로 다시 설명 드릴 예정입니다.
 
-**STAGE:플랫폼** 은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 이상의 환경에서 실행이 되도록 최적화 되어 있습니다.
+**STAGE:플랫폼** 은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 이상의 환경에서 실행이 되도록 최적화 되어 있습니다. 개발을 위해 리눅스를 설치하는 부담을 최소화 하기 위해 실 서비스에서도 효과적으로 사용할 수 있는 Docker를 사용해 보도록 하겠습니다.
 
+Docker로 서비스 구성을 지원하는 클라우드 
+
+  * [AWS](https://aws.amazon.com/ko/docker/)
+  * [Google Cloud](https://cloud.google.com/cloud-build/docs/quickstart-docker?hl=ko)
+
+Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입니다.
 
 1. Docker 설치
 
