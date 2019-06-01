@@ -124,6 +124,8 @@ Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입
         └─── conf
             │ odbcinst.ini
             │ odbc.ini
+            │ log4cxx.xml
+            │ stage.json
         │   
         │ start.lua
         ```
@@ -181,7 +183,9 @@ Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입
 
         의 결과를 확인 하실 수 있습니다. <br>
         확인 완료 후 *Ctrl+C*를 통해 Docker를 중지합니다.
-        
+
+        > Docker 실행시 *-it* 옵션을 포함하지 않으면 *Ctrl+C*를 통해 서비스를 정지 할수 없습니다.
+         
         이제 개발을 위해 구성한 폴더를 포함하여 다시 연결해 보도록 하겠습니다.
 
         > ##### 1. Windows
