@@ -4,11 +4,52 @@
   mongodb에서 사용되었던 c용 bson입니다. 현재, 배포중인
 bson에 비해 가벼워서 손쉽게 사용하실 수 있습니다.
 
-  1. bson_init() -> bson_destroy()
-  2. bson_finish() 이후 전송 가능
+  1. 추가
+     1. bson_init() -> bson_destroy()
+     2. bson_finish() 이후 전송 가능
      > bson_size()는 bson_finish() 이후 정상 크기 반환
 
-  3. bson 전송은 bson_data()와 bson_size() 이용해 버퍼와, 크기를 확인 가능
+     3. bson 전송은 bson_data()와 bson_size() 이용해 버퍼와, 크기를 확인 가능
+
+  2. 읽기
+     > 순차적으로 접근하는 방식
+
+     1. bson_iterator_from_buffer() 또는 bson_iterator_init()
+     2. 다음 데이터로 이동 - bson_iterator_next()
+     3. 자료 확인
+        1. 자료형 - bson_iterator_type()
+        2. 키 - bson_iterator_key()
+        3. 값
+            - **BSON_STRING**: bson_iterator_string()
+            - **BSON_INT**: bson_iterator_int()
+            - **BSON_LONG**: bson_iterator_long()
+            - **BSON_DOUBLE**: bson_iterator_double()
+            - **BSON_OBJECT, BSON_ARRAY**: BSONbson_iterator_subiterator()
+
+     4. 필요한 데이터를 찾는 bson_iterator_find()
+
+        ```c
+        bson_type bson_iterator_find( bson_iterator *it, const char *name ) {
+            while( bson_iterator_next( it ) ) 
+            {
+                if ( strcmp( name, bson_iterator_key( it ) ) == 0 )
+                    break;
+            }
+            return bson_iterator_type( it );
+        }
+
+        bson_iterator bson_it; bson_iterator_from_buffer(&bson_it, buffer);
+        {
+            bson_iterator find_it = bson_it;
+
+            if (bson_iterator_find(&find_it, "key") != BSON_EOO)
+            {
+                ...
+            }
+        }
+        ```
+
+  3. 예제
 
   ```c
     bson b;
