@@ -21,8 +21,8 @@
 * [LUA 메뉴얼](http://www.lua.org/manual/5.3/)
 
 * 개발
-  * [시작하기](template/README.md)
-  * [연결하기](connector/README.md)
+  * [시작하기](template/)
+  * [연결하기](connector/)
 
 >## 시작
  
