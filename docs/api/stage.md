@@ -323,11 +323,12 @@
      *stage_id* 의 설정은
      ```json
         "#startup":[ 
-          ["=lua+stage"],
-          ["=lua+process"],
           ["=index+rank"],
           ["=curl+agent"],
-          ["=route+route"]
+          ["=ticket+ticket"],
+          ["=route+route"],
+          ["=lua+stage"],
+          ["=lua+process"]
         ],
      ```
      처럼, stage 이후에 (**+** 문자) 지정된 문자열을 나타냅니다.<br>
@@ -337,7 +338,8 @@
 
      > *["=lua+stage", "=index+rank"]* 라고 정의되면 하나의 프로세서에 두개의 stage가 실행됩니다.
 
-     * index로 메시지 전달
+     * **index로 메시지 전달**
+
        점수(스코어)를 기준으로 실시간 순위를 처리해야 하는 경우가 있습니다. 이러한 처리를 위한 기능으로, 일반적으로 스코어보드라고 합니다.<br>
 
        사용 방법은 비교적 간단하게 정의되어 있으며 그에 대한 접근 방법은 다음과 같습니다.
@@ -462,7 +464,7 @@
           ]
           ```
 
-     * curl로 메시지 전달
+     * **curl로 메시지 전달**
 
         HTTP(S)를 통해 외부와 연동이 필요한 경우 사용할 수 있습니다. RESTful과 같은 인페이스 연동과 같은 경우가 대표적인 경우로 주로, 결제에 대한 정보 또는 푸쉬에 대한 데이터 연동을 위한 경우가 이에 해당합니다.
         > 최근 Google또는 NAVER 같은 많은 회사에서 RESTful형태의 API를 통해 다양한 서비스를 제공하고 있습니다.
@@ -510,7 +512,7 @@
             |message|string|처리 결과|
             |time|number|처리된 경과 시간|
 
-     * route로 메시지 전달
+     * **route로 메시지 전달**
 
        전달되는 메시지를 필터링하여 전달 받을 수 있습니다.<br/>
 
@@ -617,7 +619,7 @@
 
         최소 30초 이내에 주기적으로 전달되어야 합니다. 만약, 전달되지 않는다면 route에서 제거됩니다.
 
-     * ticket으로 메시지 전달
+     * **ticket으로 메시지 전달**
 
        ticket은 동시에 처리하고자 하는 명령의 수를 제한하기 위해 추가 되었습니다. 예를 들어, 온라인 게임의 로그인과 같은 과정을 보면 순간적으로 수 많은 요청이 발생될 수 있습니다. 
        
@@ -631,6 +633,22 @@
 
         의 형태로 사용됩니다. 데이터를 처리할 수 있는 상태가 되면 ticket stage가 callback_id를 호출하여 활성화 됩니다.
 
+        만약, 요청에 대한 처리 결과를 받고 싶다면 다음과 같은 방법으로 요청하면 됩니다.
+
+        ```lua
+          stage.signal("ticket:category=callback_id?feedback_id", { ... })
+        ```
+
+        처리된 결과는, 다음과 같은 방법으로
+        ```lua
+          stage.waitfor("feedback_id", function (result)
+             -- result: true    처리 완료
+             --         false   처리 실패
+             --         @0x...  ticket_id
+          end)
+        ```
+        받을 수 있습니다.
+
         데이터를 처리할 수 있는 상태가 되면, 기본값으로 1초 동안 권한이 유지 됩니다. 만약, 처리 시간이 길어질것 같다면 
 
         ```lua
@@ -641,7 +659,7 @@
 
         위의 예를 들어 보면
         ```lua
-          stage.waitfor("login_query", function (socket_id, value)
+          stage.waitfor("login_query", function (ticket_id, socket_id, value)
               stage.signal(nil, 3000) -- 3초 동안 사용을 예약
               odbc.new(...)
           end)
