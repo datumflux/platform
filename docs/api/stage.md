@@ -617,6 +617,43 @@
 
         최소 30초 이내에 주기적으로 전달되어야 합니다. 만약, 전달되지 않는다면 route에서 제거됩니다.
 
+     * ticket으로 메시지 전달
+
+       ticket은 동시에 처리하고자 하는 명령의 수를 제한하기 위해 추가 되었습니다. 예를 들어, 온라인 게임의 로그인과 같은 과정을 보면 순간적으로 수 많은 요청이 발생될 수 있습니다. 
+       
+       이러한 상태가 빠르게 해소되면 문제가 없지만 지속적으로 늘어 난다면 분명 서비스에 장애가 발생되는 원인이 됩니다.
+
+       이러한 경우를 위해 동시 실행 가능한 수를 제한하면서 처리 할수 있습니다.
+
+        ```lua
+          stage.signal("ticket:category=callback_id", { ... })
+        ```
+
+        의 형태로 사용됩니다. 데이터를 처리할 수 있는 상태가 되면 ticket stage가 callback_id를 호출하여 활성화 됩니다.
+
+        데이터를 처리할 수 있는 상태가 되면, 기본값으로 1초 동안 권한이 유지 됩니다. 만약, 처리 시간이 길어질것 같다면 
+
+        ```lua
+          stage.signal(nil, msec)
+        ```
+
+        을 전달해 사용시간을 연장할 수 있습니다. 물론, 연장을 하지 않은 상태에서 오래 처리를 하더라도 처리가 중지되지는 않지만 동시 실행 수를 초과하는 상태가 발생될 수 있으므로 시간을 지정해 주어 초과되는 상황을 제안할 필요가 있습니다.
+
+        위의 예를 들어 보면
+        ```lua
+          stage.waitfor("login_query", function (socket_id, value)
+              stage.signal(nil, 3000) -- 3초 동안 사용을 예약
+              odbc.new(...)
+          end)
+
+          ...
+          stage.signal("ticket:odbc=login_query@A", { socket.id, msg.userid})
+        ```
+        다음과 같은 형태로 처리할 수 있습니다.
+
+        설정에 사용되는 *category_id*는 미리 정의되어야 하는 설정을 *stage.json*에서 설정이 됩니다.
+
+
   * **예제**
     ```lua
        stage.waitfor("fetch", function (id, v) 

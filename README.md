@@ -133,6 +133,7 @@
        * =index
        * =curl
        * =route
+       * =ticket
 
        입니다. *SDK API를 사용해 커스터마이징된 stage 추가 가능*<p>
        외부 요청에 대한 처리를 하기위해서는 stage_id를 지정해야 하는데, id는 stage명 뒤에 추가되는 *"+이름"* 형태로 지정을 합니다. 
@@ -155,16 +156,22 @@ exec ./single -c - $* << EOF
     "#cluster": [ ":eth0", 18081, "127.0.0.1:28081"],
     "#threads": [ 10, 10000 ],
     "#startup":[ 
-        ["=lua+stage", "=index+rank", "=curl+agent", "=route+route"]
+        ["=index+index"],
+        ["=route+route"],
+        ["=ticket+ticket"],
+        ["=curl+curl"],
+        ["=lua+stage"]
     ],
 
     "=curl+agent": {
-        "user-agent": "STAGE Agent/1.0"
+        "user-agent": "STAGE Agent/1.0",
+        "verbose": 0,
+        "timeout": 10000
     },
 
     "=lua": {
         "%preload": "preload",
-        "%package": [ "devel", "v1" ],
+        "%package": [ "package", "rollback", "[0]lib", "[0]" ],
         "%odbc":  {
             "DF_DEVEL": {
                 "DRIVER": "MySQL ODBC 8.0 Unicode Driver",
@@ -176,7 +183,12 @@ exec ./single -c - $* << EOF
         },
         "=lua+stage": "start"
     },
-
+    "=ticket+ticket": [
+        100000,
+        {
+            "odbc": 10
+        }
+    ],
     "=index+rank": "score/"
 }
 EOF
