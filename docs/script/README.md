@@ -15,7 +15,7 @@
    로 정의가 되면 stage.waitfor()에 정의된 함수는 *LOCAL_SPACE* 에 접근 할 수 없습니다.
 
    ```lua
-     GLOBAL_SPACE = {}
+     _G.GLOBAL_SPACE = {}
 
      stage.waitfor("test", function (v)
         GLOBAL_SPACE[v.k] = v.v
@@ -23,6 +23,20 @@
    ```
 
    이와 같은 형태는 값이 정상적으로 변경이 됩니다.
+
+   **_G.** 로 설정되지 않은 변수는 *stage.addtask()* 또는 *stage.waitfor()* 의 등록 함수에서 참고할 수 없습니다. (샌드박스 정책)
+
+   만약, 샌드박스 정책을 설정하면 **_G.** 설정없이 사용 가능합니다.
+   샌드박스 정책은 다음과 같이 설정 합니다. 
+
+   ```lua
+     _ENV[""] = {
+        "GLOBAL_SPACE", 
+        ["MESSAGE"] = "READ-ONLY"
+     }
+   ```
+
+   샌드박스 정책에 설정되지 않은 변수는 함수간 공유가 허용되지 않습니다.
 
    * TIP
      1. *stage.addtask()* 에 정의된 함수도 동일한 형태로 접근이 가능합니다.

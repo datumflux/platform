@@ -649,6 +649,11 @@
         ```
         받을 수 있습니다.
 
+        > **TIP:** *"feedback_id*"를 임의로 생성하고자 한다면 *"local feedback_id = stage.waitfor(function (..))"* 으로 feedback_id를 생성 할수 있습니다. 
+
+        > 사용을 마친 *feedback_id*는 반드시 *stage.waitfor(feedback_id, nil)* 로 제거해야 합니다.
+
+
         데이터를 처리할 수 있는 상태가 되면, 기본값으로 1초 동안 권한이 유지 됩니다. 만약, 처리 시간이 길어질것 같다면 
 
         ```lua
@@ -659,7 +664,8 @@
 
         위의 예를 들어 보면
         ```lua
-          stage.waitfor("login_query", function (ticket_id, socket_id, value)
+          stage.waitfor("login_query", function (socket_id, value)
+              -- _TICKET 변수에 사용된 티켓ID가 설정됩니다.
               stage.signal(nil, 3000) -- 3초 동안 사용을 예약
               odbc.new(...)
           end)
