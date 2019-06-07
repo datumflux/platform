@@ -4,15 +4,15 @@
 
 해당 내용은 대부분의 서버 개발에 공통적인 부분으로 프로젝트의 성격상 달라지는 부분은 각 항목 별로 다시 설명 드릴 예정입니다.
 
-**STAGE:플랫폼** 은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 이상의 환경에서 실행이 되도록 최적화 되어 있습니다. 개발을 위해 리눅스를 설치하는 부담을 최소화 하기 위해 실 서비스에서도 효과적으로 사용할 수 있는 Docker를 사용해 보도록 하겠습니다.
+**STAGE:플랫폼** 은 리눅스를 기반으로 Ubuntu 18.04 LTS 또는 CentOS 7 이상의 환경에서 실행이 되도록 최적화 되어 있습니다. 개발을 위해 리눅스를 설치하는 부담을 최소화 하고, 실 서비스에서도 효과적으로 사용할 수 있는 도커(Docker)를 사용해 보도록 하겠습니다.
 
-Docker로 서비스 구성을 지원하는 클라우드 
+*도커(Docker)로 서비스 구성을 지원하는 클라우드*
 
   * [AWS](https://aws.amazon.com/ko/docker/)
   * [Google Cloud](https://cloud.google.com/cloud-build/docs/quickstart-docker?hl=ko)
     * https://cloud.google.com/kubernetes-engine/docs/quickstart
 
-Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입니다.
+도커(Docker)는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입니다.
 
 1. Docker 설치
 
@@ -65,7 +65,7 @@ Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입
 
      > #### Docker for Windows 설치 조건
      1. Hyper-V 지원 필요
-     2. [docker hub](https://hub.docker.com/editions/community/docker-ce-desktop-windows)에서 계정 생성 필요
+     2. [docker hub](https://hub.docker.com/editions/community/docker-ce-desktop-windows)에서 계정 생성 필요합니다. (*다운로드를 위해서 로그인이 필수*) - 간단히 계정 생성이 가능합니다.
 
 2. STAGE:플랫폼 설치
 
@@ -90,7 +90,15 @@ Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입
         Digest: sha256:5df6536b616d9af5ea3ac37fddfdd94db1ebd2ec963ad2a5e6b048e52424f3e3
         Status: Downloaded newer image for datumflux/stage:latest
         ```
-      을 통해 설치를 합니다.
+      을 통해 설치를 합니다. 
+      
+      STAGE:플랫폼은 개발 버젼과 릴리즈 버젼이 동시에 배포되고 있습니다. *latest* 버젼은 개발 버젼으로 분리됩니다.
+
+      만약, 릴리즈 버젼을 받고자 하는 경우에는
+        ```console
+        $ docker pull datumflux/stage:v1.0
+        ```
+      을 통해 설치가 가능합니다.
 
       설치 여부는
         ```console
@@ -377,15 +385,16 @@ Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입
 
     2. 스크립트의 사용 순서
 
-       STAGE 플랫폼은 스크립트를 다양한 경로에서 가져와 사용 합니다.
+       STAGE:플랫폼은 스크립트를 다양한 경로에서 가져와 사용 합니다. 기본 설정된 경로는
 
        - package
-       - lib
        - rollback
 
-       순서로 스크립트를 확인 합니다. 즉, 같은 파일명을 가지고 있는 스크릅트가 각각의 경로에 존재 할 수 있음을 뜻합니다.
+       순서로 스크립트를 확인 합니다. STAGE:플랫폼은 항상 처음에 설정된 경로에서 스크립트를 가져와 실행을 하려고 시도를 합니다. 만약 문제가 발생되면 다음 폴더에서 동일한 파일명의 이름을 찾게 됩니다.
+       
+       1분 주기로 파일의 변경여부를 모니터링 하며, 파일이 변경되면 해당 파일을 다시 로딩하여 사용하게 됩니다.
 
-       해당 처리는 스크립트의 오류로 인한 문제를 해소 하기 위한 방법으로 package/aaaa.lua 의 파일에 오류가 있다면 rollback/aaaa.lua를 사용하게 하기 위함입니다.      
+       해당 처리는 스크립트의 오류로 인한 서비스의 문제를 해소 하기 위한 방법으로 package/aaaa.lua 의 파일에 오류가 있다면 rollback/aaaa.lua를 사용하고 다음 모니터링 시간에 다시 순서대로 확인을 하여 복구를 시도합니다.   
 
        > Docker를 사용하지 않은 실행에서는 해당 처리의 순서를 자유롭게 변경 하실 수 있습니다.
 
@@ -404,11 +413,10 @@ Docker는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입
          - 동시 접근 제한 객체 풀
          
        등의 특성들이 기존의 디버깅 방식으로 처리하기 어려움이 있어 새로운 방식의 런타임 디버깅을 고려중에 있습니다.
-              
+
     2. BSON
 
        STAGE:플랫폼은 외부 통신을 위해 [BSON](http://bsonspec.org/) 형태로 데이터를 주고 받습니다.
-
 
     3. odbc 사용
 
