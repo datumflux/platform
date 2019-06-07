@@ -145,24 +145,42 @@
   
   * *STAGE:플랫폼* - rfc
   ```lua
+  -- 처리 여부에 대한 응답
+  stage.waitfor("route:@", function (id, k)
+      print("READY CHECK", id, k)
+      stage.signal(nil, k) -- 처리가 가능한 상태라면 응답
+  end) 
   
+  -- 처리 함수
+  stage.waitfor("call0", function (id, v)
+      print("CALLBACK", id, v, _WAITFOR[0])
+      if v ~= nil then
+          stage.signal(nil, "FEEDBACK--" .. v)
+      end
+  end)
+
+  -- 처리 가능한 기능 등록
+  stage.signal("route:@", {
+      ["id0"] = "call0",
+      ["id1"] = "call0"
+  });
   ```
 
   * *STAGE:플랫폼* - stage
   ```lua
-  stage.waitfor("result", function (v)
-      print("RESULT", v)
+  stage.waitfor("ret0", function (v)
+      print("RETURN", v, _WAITFOR[0])
   end)
 
-  stage.signal("rfc:execute=result@A", {
-      function (a, b)
-          return a + b
-      end,
-      10, 20
-  })
+  stage.signal("route:id0=ret0", "ROUTE MESSAGE");  
   ```
   
+  의 형태로 등록을 하고, *stage*에서 처리를 요청하면, 처리가 가능한 *rfc* 에서 처리 후 결과를 반환하게 됩니다.
+  *rfc* 가 여러개인 경우 로드벨런싱으로 처리 됩니다. 만약, 이때 모든 *rfc* 로 메시지를 보내고자 한다면
   
+  ```lua
+  stage.signal("route:*id0=ret0", "ROUTE MESSAGE");  
+  ```
   
-  
+  와 같이 **\*** 를 추가하여 전달하면 됩니다. 이때는 *rfc* 의 *route:@* 를 통해 처리 가능여부를 확인하지 않습니다.
   
