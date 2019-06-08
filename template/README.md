@@ -14,6 +14,11 @@
 
 도커(Docker)는 확장성 및 운영 효율성이 높아 지속적으로 확대 중입니다.
 
+> ### 기능 확장
+  1. 비동기 처리를 위한 [libuv 사용](https://github.com/datumflux/stage/tree/master/template/luv)
+  
+> ### 설치
+  
 1. Docker 설치
 
     설치에 대한 자세한 내용은 [Docker CE](https://docs.docker.com/install/) 설치 페이지를 통해 확인 할 수 있습니다.
