@@ -1,4 +1,5 @@
 > ## [luv](https://github.com/luvit/luv) 인터페이스 사용
+> luv는 https://github.com/luvit 에서 libuv 라이브러리를 lua에서 사용가능 하도록 연동한 인터페이스 입니다.
 
 STAGE:플랫폼에 libuv 기능을 사용하기 위한 방법 방법은 다음과 같습니다.
 
