@@ -25,6 +25,7 @@ end
 ```
 
 최종 STAGE:플랫폼과의 연동이 완료된 처리 방식 입니다.
+> STAGE:플랫폼의 stage.submit()에는 luv의 기능이 정상 동작되지 않습니다. 해당 VM은 분리되어 구동되기 때문입니다 
 
 ```lua
 local uv = require('luv')
