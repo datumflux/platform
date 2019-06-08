@@ -7,6 +7,9 @@ STAGE:플랫폼에 libuv 기능을 사용하기 위한 방법 방법은 다음�
 
 **luv.so** 파일을 다운로드 받아 도커(docker)와 연동되는 디랙토리에 복사 합니다.
 
+> ### luv.so 빌드 이력
+  - **2019-06-08** commit [a35a3e4](https://github.com/luvit/luv/commit/a35a3e4453dc5c1bd74480c6c0738ee79f0a6a82) 빌드
+  
 ```console
 $ ls stage/
 luv.so     rollback/  index/
