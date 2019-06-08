@@ -3,7 +3,7 @@
 
 STAGE:플랫폼에 libuv 기능을 사용하기 위한 방법 방법은 다음과 같습니다.
 
-> 연동을 위해서는 [docker hub](https://hub.docker.com/r/datumflux/stage)에서 v1.1 이상으로 업데이트 받아야 합니다.
+> 연동을 위해서는 [docker hub](https://hub.docker.com/r/datumflux/stage)에서 v1.1 이상으로 업데이트 받아야 합니다.<br>
 > luv의 기능중 LuaJIT의 기능은 사용할 수 없습니다. (Lua 5.3을 사용합니다.)
 
 > ### luv.so 빌드 이력
