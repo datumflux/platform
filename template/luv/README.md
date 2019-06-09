@@ -60,3 +60,64 @@ return function ()
   require('luv').run("nowait")
 end
 ```
+
+*stage.submit()* 을 통해 기능을 분리하여 실행하기 위한 방법은 다음과 같습니다.
+
+1. stage.submit()에 직접 함수로 구현하는 방법
+```lua
+stage.submit(0, function ())
+  local uv = require('luv')
+
+  -- Create a handle to a uv_timer_t
+  local timer = uv.new_timer()
+
+  -- This will wait 1000ms and then continue inside the callback
+  timer:start(1000, 0, function ()
+    -- timer here is the value we passed in before from new_timer.
+
+    print ("Awake!")
+
+    -- You must always close your uv handles or you'll leak memory
+    -- We can't depend on the GC since it doesn't know enough about libuv.
+    timer:close()
+  end)
+
+  print("Sleeping");
+
+  -- uv.run will block and wait for all events to run.
+  -- When there are no longer any active handles, it will return
+  uv.run()
+end)
+```
+
+2. stage.submit()에 스크립트 소스를 로딩하는 방법
+```lua
+--
+-- luv.lua
+--
+local uv = require('luv')
+
+-- Create a handle to a uv_timer_t
+local timer = uv.new_timer()
+
+-- This will wait 1000ms and then continue inside the callback
+timer:start(1000, 0, function ()
+  -- timer here is the value we passed in before from new_timer.
+
+  print ("Awake!")
+
+  -- You must always close your uv handles or you'll leak memory
+  -- We can't depend on the GC since it doesn't know enough about libuv.
+  timer:close()
+end)
+
+print("Sleeping");
+
+-- uv.run will block and wait for all events to run.
+-- When there are no longer any active handles, it will return
+uv.run()
+```
+
+```lua
+stage.submit(0, "luv")
+```
