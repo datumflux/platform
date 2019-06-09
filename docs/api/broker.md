@@ -53,7 +53,7 @@
       |id|i|소캣 번호|
       |crypto|b|암호화 유무|전달되는 데이터의 암호화 유무를 지정|
       |errno|i|오류 번호|
-      |addrs|t|연결 주소 [로컬, 원격]|
+      |addrs|t|연결 주소 [1: 로컬, 2: 원격]|
       |-|v|사용자 정의|
 
     > *socket*에 다음 정보를 설정할수 있습니다.
@@ -125,7 +125,7 @@
       |id|i|소캣 번호|
       |crypto|b|암호화 유무|전달되는 데이터의 암호화 유무를 지정|
       |errno|i|오류 번호|
-      |addrs|t|연결 주소 [로컬, 원격]|
+      |addrs|t|연결 주소 [1: 로컬, 2: 원격]|
       |-|v|사용자 정의|
 
     > *socket*에 다음 정보를 설정할수 있습니다.
@@ -160,7 +160,7 @@
        ...
        broker.join("tcp://192.168.1.10:8081?packet=10k,40k", function (socket)
           ...
-          print("NTOA: ", k, broker.ntoa(socket.addrs.remote));
+          print("NTOA: ", k, broker.ntoa(socket.addrs[2]));
           socket.commit("GET / HTTP/1.0\r\n\r\n");
        end);
     ```
