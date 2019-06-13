@@ -104,6 +104,11 @@ print(process.id .. ": Initialize... STAGE[" .. process.stage .. "]")
 --
 -- 테스트를 위해 패킷 유형을 text로 설정하였습니다. 실제 서비스에서는 bson으로 변경 필요합니다.
 --
+process.USERS = {
+	ID = {},
+	NICKNAME = {}
+}
+
 local port = broker.ready("tcp://0.0.0.0:8081?text=2k,8k", function (socket, addr)
 	local BLACKLIST = process.BLACKLIST
 	local MAINTENANCE_TIME = process.MAINTENANCE_TIME
@@ -140,6 +145,16 @@ port.close = function (socket)
 
 	process.updateConcurrentReport(2)
 	if socket._user ~= nil then
+		local user_id = socket._user.user_id
+
+		stage.v("USERS", function (USERS)
+			local v = USER.ID[user_id] -- [ nickname, socket_id ]
+
+			USER.NICKNAME[ v[1] ] = nil -- [ user_id, socket_id ]
+			USERS.ID[user_id] = nil
+			return USERS
+		end)
+
 		log4cxx.out("LOGOUT", socket._user.user_id)
 		odbc.new("DF_DEVEL", function (adp)
 			adp.execute("UPDATE USER SET logout_time = ? WHERE user_id = ?", { os.time(), socket._user.user_id })
