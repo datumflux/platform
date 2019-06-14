@@ -4,34 +4,35 @@ _ENV[""] = {
 }
 
 -- stage.submit()과 broker.ready()에 연결된 함수에서 사용하기 위한 변수를 설정
-process.BLACKLIST = {}
-process.MAINTENANCE_TIME = { 0, 0, {} }
-process.CONCURRENT = {
+__("BLACKLIST", {})
+__("MAINTENANCE_TIME", { 0, 0, {} })
+__("CONCURRENT", {
 	REPORT = {},
 	start = 0
-};
+});
 
-process.updateConcurrentReport = function( index, now)
-	stage.v("CONCURRENT", function (CONCURRENT)
+__("updateConcurrentReport", function ()
 
-		if now == nil then
-			now = os.time()
-		end
+	return function( index, now)
+		__("CONCURRENT", function (CONCURRENT)
 
-		local tm = os.date("*t", now)
-		local today_index = (tm.hour * 60) + tm.min
-		if CONCURRENT.REPORT[today_index] == nil then
-			CONCURRENT.REPORT[today_index] = { 0, 0, 0 }
-		end
-		CONCURRENT.REPORT[today_index][index] = CONCURRENT.REPORT[today_index][index] + 1
-		return CONCURRENT
-	end)
-end
+			if now == nil then
+				now = os.time()
+			end
+
+			local tm = os.date("*t", now)
+			local today_index = (tm.hour * 60) + tm.min
+			if CONCURRENT.REPORT[today_index] == nil then
+				CONCURRENT.REPORT[today_index] = { 0, 0, 0 }
+			end
+			CONCURRENT.REPORT[today_index][index] = CONCURRENT.REPORT[today_index][index] + 1
+			return CONCURRENT
+		end)
+	end
+end)
 
 --
 stage.addtask(60 * 1000, function ()
-	local CONCURRENT = process.CONCURRENT
-
 	local tm = os.date("*t", now)
 	local today_index = ((tm.hour * 60) + tm.min) - 1
 	if today_index < 0 then
@@ -48,8 +49,7 @@ stage.addtask(60 * 1000, function ()
 end)
 
 stage.waitfor("$black", function (ips)
-	stage.v("BLACKLIST", function (BLACKLIST)
-
+	__("BLACKLIST", function (BLACKLIST)
 		for k, v in ipairs(ips) do
 			if v == 0 then
 				BLACKLIST[k] = nil
@@ -62,7 +62,7 @@ stage.waitfor("$black", function (ips)
 end)
 
 stage.waitfor("$maintenance", function (op, value)
-	stage.v("MAINTENANCE_TIME", function (MAINTENANCE_TIME)
+	__("MAINTENANCE_TIME", function (MAINTENANCE_TIME)
 
 		if op == "set" then
 			if type(value) == "table" then
@@ -94,7 +94,6 @@ stage.waitfor("$maintenance", function (op, value)
 		elseif op == "reset" then
 			MAINTENANCE_TIME = { 0, 0, {}}
 		end
-
 		return MAINTENANCE_TIME
 	end)
 
@@ -104,15 +103,12 @@ print(process.id .. ": Initialize... STAGE[" .. process.stage .. "]")
 --
 -- 테스트를 위해 패킷 유형을 text로 설정하였습니다. 실제 서비스에서는 bson으로 변경 필요합니다.
 --
-process.USERS = {
+__("USERS", {
 	ID = {},
 	NICKNAME = {}
-}
+})
 
 local port = broker.ready("tcp://0.0.0.0:8081?text=2k,8k", function (socket, addr)
-	local BLACKLIST = process.BLACKLIST
-	local MAINTENANCE_TIME = process.MAINTENANCE_TIME
-
 	local ip = broker.ntoa(addr):split()[1] -- "IP:PORT" => "IP"
 	local now = os.time()
 
@@ -136,21 +132,27 @@ local port = broker.ready("tcp://0.0.0.0:8081?text=2k,8k", function (socket, add
 		end
 	end
 
-	process.updateConcurrentReport(1, now)
+	updateConcurrentReport(1, now)
+	socket._waitfor = {}
 	print("LISTEN", ip)
 end)
 
 port.expire = 30000
 port.close = function (socket)
 
-	process.updateConcurrentReport(2)
+	updateConcurrentReport(2)
+	for k, v in pairs(socket._waitfor) do
+		log4cxx.out("CANCEL - " .. k, v[1], v[2])
+		stage.waitfor(v[1], nil) -- { callback_id, start_time }
+	end
+
 	if socket._user ~= nil then
 		local user_id = socket._user.user_id
 
-		stage.v("USERS", function (USERS)
-			local v = USER.ID[user_id] -- [ nickname, socket_id ]
+		__("USERS", function (USERS)
+			local v = USERS.ID[user_id] -- [ nickname, socket_id ]
 
-			USER.NICKNAME[ v[1] ] = nil -- [ user_id, socket_id ]
+			USERS.NICKNAME[ v[1] ] = nil -- [ user_id, socket_id ]
 			USERS.ID[user_id] = nil
 			return USERS
 		end)
@@ -168,7 +170,7 @@ port.receive = function (socket, _data)
 	   "cmd": value
 	}
 	]]
-	process.updateConcurrentReport(3)
+	updateConcurrentReport(3)
 	stage.submit(socket.id, function (_socket, _data)
 		local socket = broker.f(_socket)
 		local data = stage.json(_data)
@@ -201,6 +203,20 @@ port.receive = function (socket, _data)
 	end, socket.id, _data)
 end
 
+--[[
+local V = stage.proxy({}, {
+	count = function (_this, edge, k, v)
+		print("COUNT: UPDATE - ", k, v)
+		if _this.count == nil then
+			_this.count = 1
+		end
+		_this.count = _this.count + 1
+	end
+})
+
+V.count = 10
+print("COUNT: ", V.count)
+]]--
 return function ()
     require('luv').run('nowait')
 end

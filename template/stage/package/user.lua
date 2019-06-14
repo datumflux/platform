@@ -19,6 +19,8 @@ end
 
 local function CHALLENGE_update(socket, data)
     -- { "challenge_id": value, ... }
+    local now = os.time()
+
     ::g_retry::
 
     local next = {}
@@ -28,9 +30,21 @@ local function CHALLENGE_update(socket, data)
         if socket._challenge[k] ~= nil then
             local CHALLENGE = stage.proxy(socket._challenge[k], {
                 value = { socket._challenge[k].finish, function (_this, edge, k, v)
-                    if _this.next ~= 0 then
-                        retry = retry + 1
-                        next[_this.next] = v - _this.finish
+                    if _this.finish_time == 0 and _this.expire_time > now then -- 이미 완료한 챌린지가 아닌 경우에 처리
+
+                        if _this.retry_count == 0 then
+                            _this.finish_time = now -- 완료시간
+                        else -- 반복 가능한 챌린지 인 경우
+                            _this.value = v - _this.finish
+                            _this.retry_count = _this.retry_count - 1
+                        end
+
+                        if _this.next_challenge ~= 0 then -- 연결 챌린지가 존재
+                            retry = retry + 1
+                            next[_this.next_challenge] = _this.next_value
+                        end
+
+                        -- TODO: 보상 처리
                     end
                 end }
             })
@@ -46,7 +60,7 @@ local function CHALLENGE_update(socket, data)
 end
 
 stage.waitfor("$broadcast", function (data)
-    local IDS = process.USERS.ID
+    local IDS = USERS.ID
 
     local R = {}
     for k, v in pairs(IDS) do
@@ -56,7 +70,7 @@ stage.waitfor("$broadcast", function (data)
 end)
 
 stage.waitfor("$unicast", function (data)
-    local v = process.USERS.NICKNAME[data.target]
+    local v = USERS.NICKNAME[data.target]
     if v ~= nil then
         broker.signal({ v[2] }, data)
     end
@@ -67,7 +81,7 @@ local function CHATTING(socket, data)
     if data.target == nil then -- all
         stage.signal("*$boradcast", data)
     else
-        local v = process.USERS.NICKNAME[data.target]
+        local v = USERS.NICKNAME[data.target]
         if v ~= nil then
             broker.signal({ v[2] }, data)
         else
