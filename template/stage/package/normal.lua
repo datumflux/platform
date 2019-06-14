@@ -2,22 +2,34 @@
 local function LOGIN_user(socket, data)
 	print("LOGIN", data)
 
-	if socket._waitfor["login"] ~= nil then
-		stage.waitfor(socket._waitfor[1], nil)
-		socket._waitfor["login"] = nil
-	end
+	socket("_waitfor", function (_waitfor)
+		if _waitfor["login"] ~= nil then
+			stage.waitfor(_waitfor[1], nil)
+			_waitfor["login"] = nil
+		end
+		return _waitfor
+	end)
 
 	local callback_id = stage.waitfor(function (_socket, v)
 		local socket = broker.f(_socket)
 		local callback_id = _WAITFOR[0]:split("=")[1]
 
-		print("TICKET CALLBACK", v, socket._waitfor["login"][1], callback_id)
-		if socket._waitfor["login"][1] ~= callback_id then
+		local success = false
+		socket("_waitfor", function (_waitfor)
+
+			print("TICKET CALLBACK", v, _waitfor["login"][1], callback_id)
+			if _waitfor["login"][1] == callback_id then
+				success = true
+
+				_waitfor["login"] = nil
+				stage.waitfor(callback_id, nil)
+			end
+			return _waitfor
+		end)
+
+		if success == false then
 			return
 		end
-
-		socket._waitfor["login"] = nil
-		stage.waitfor(_WAITFOR[0], nil)
 
 		local r = odbc.new("DF_DEVEL", function (adp)
 
@@ -37,7 +49,10 @@ local function LOGIN_user(socket, data)
 		broker.signal( { _socket }, r)
 	end, socket.id)
 
-	socket._waitfor = {login = { callback_id, os.time() }}
+	socket("_waitfor", function (_waitfor)
+		_waitfor["login"] = { callback_id, os.time() }
+		return _waitfor
+	end)
 	print("TICKET REQUEST", v, socket._waitfor["login"], os.time())
 	stage.signal("ticket:login=" .. callback_id, data)
 end
