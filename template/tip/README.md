@@ -13,8 +13,8 @@
       ["count"] = {
           20,
           30,
-          function (t, edge_values, key, new_value)
-              print("CHANGE", key, edge_values, new_value, t[key])
+          function (_this, edge_values, key, new_value)
+              print("CHANGE", key, edge_values, new_value, _this[key])
               for k, v in ipairs(edge_values) do
                   print("---", k, v)
               end
@@ -32,6 +32,8 @@
   ---     1       20.0
   ---     2       30.0
   ```
+
+  > **참고:** 콜백함수 내에서 값을 강제로 변경하더라도, 변경 예정인 (new_value)로 다시 설정 됩니다.
 
 > ### 2. 대량의 동시 처리 요청을 관리하는 방법
 
@@ -184,3 +186,63 @@
   
   와 같이 **\*** 를 추가하여 전달하면 됩니다. 이때는 *rfc* 의 *route:@* 를 통해 처리 가능여부를 확인하지 않습니다.
   
+> ### 4. STAGE:플랫폼 내에서 변수 공유
+
+  STAGE:플랫폼은 샌드박스 정책에 따라 전역변수의 사용이 엄격히 제한이 됩니다. 이러한 제한을 회피하기 위한 방법은 다음과 같습니다.
+
+  1. *"__()"* 전역 함수를 사용해 변수를 저장하는 방법
+  2. *"process."* 프로퍼티에 변수를 저장하는 방법: **__()로 통합**
+  3. *"stage.v()"* 함수를 사용해 변수를 저장하는 방법: **__()로 통합**
+
+  이 있습니다. 해당 방법을 통해 저장된 변수는 STAGE:플랫폼 내에서 전역 변수로 접근이 가능합니다.
+
+  ```lua
+  GLOBAL="HELLO"
+
+  stage.submit(0, function ()
+     print("GLOBAL----", GLOBAL)
+  end)
+  ```
+
+  을 실행하면 *"GLOBAL----"* 은 nil 이 표시됩니다.
+
+  ```lua
+  __("GLOBAL", "HELLO")
+
+  stage.submit(0, function ()
+     print("GLOBAL----", GLOBAL)
+  end)
+  ```
+
+  이후에는 정상적으로 접근이 됩니다. 
+  
+  > **TIP** 전역변수가 배열 또는 딕셔너리 자료형의 경우 값 전체를 재 설정해야 변경이 됩니다.
+
+  ```lua
+  __("GLOBAL", {})
+
+  stage.submit(0, function ()
+     GLOBAL[1] = 1 -- 변경 안됨
+     __("GLOBAL", GLOBAL) -- 변경
+
+     print("GLOBAL----", GLOBAL)
+  end)
+  ```
+
+  만약, 접근시 락에 대한 처리가 필요하면 다음과 같이 접근할 수 있습니다.
+
+  ```lua
+  __("GLOBAL", {})
+
+  stage.submit(0, function ()
+
+     __G("GLOBAL", function (GLOBAL)
+        GLOBAL[1] = 1
+        return GLOBAL   -- 변경 적용
+     end)
+
+     print("GLOBAL----", GLOBAL)
+  end)
+  ```
+
+  해당 처리는 동시접근에 대한 효과적인 처리를 위해 스냅샷 형태로 변수를 관리하기 때문입니다.
