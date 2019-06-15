@@ -16,7 +16,7 @@
 
 > ### 기능 확장
   1. 비동기 처리를 위한 [libuv 사용](https://github.com/datumflux/stage/tree/master/template/luv)
-  2. [StackTracePlus 사용](https://github.com/ignacio/StackTracePlus)
+  2. [StackTracePlus 사용](https://github.com/datumflux/stage/tree/master/template/stacktrace)
 
 > ### 설치
   
