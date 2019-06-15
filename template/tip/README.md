@@ -232,28 +232,3 @@
     ```
 
   이후에는 정상적으로 접근이 됩니다. 
-  
-  > **TIP 전역변수로 사용되는 배열 또는 딕셔너리 자료형의 경우:** 멤버의 값을 변경해야 하는 경우 *__()* 함수를 통해 처리되어야 합니다. -- 이는 스냅샷 상태로 변수를 관리하는 샌드박스 처리 정책에 따라 제한되기 때문입니다.
-  
-  ```lua
-    stage.submit(0, function ()
-        GLOBAL[1] = 1 -- 변경 안됨
-        __("GLOBAL", GLOBAL) -- 변경
-
-        print("GLOBAL----", GLOBAL)
-    end)
-  ```
-
-  만약, 접근시 락에 대한 처리가 필요하면 다음과 같이 접근할 수 있습니다.
-  
-  ```lua
-    stage.submit(0, function ()
-
-        __G("GLOBAL", function (GLOBAL)
-            GLOBAL[1] = 1
-            return GLOBAL
-        end)
-
-        print("GLOBAL----", GLOBAL)
-    end)
-  ```
