@@ -14,27 +14,24 @@
 
 기존의 오류 정보가 
 
-    lua5.1.exe: D:\trunk_git\sources\stacktraceplus\test\test.lua:10: attempt to concatenate a nil value
-    stack traceback:
-    	D:\trunk_git\sources\stacktraceplus\test\test.lua:10: in function <D:\trunk_git\sources\stacktraceplus\test\test.lua:7>
-    	(tail call): ?
-    	D:\trunk_git\sources\stacktraceplus\test\test.lua:15: in main chunk
-    	[C]: ?
+ ```console
+2019-06-16 01:42:15,035 [WARN ] [lua:2033] [string "package/start.lua"]:25: attempt to call a nil value (field 'v')
+stack traceback:
+	[string "package/start.lua"]:25: in function <[string "package/start.lua"]:23>
+ ```
 		
 다음 방식으로 표시됩니다.
 
-    lua5.1.exe: D:\trunk_git\sources\stacktraceplus\test\test.lua:10: attempt to concatenate a nil value
-    Stack Traceback
-    ===============
-    (2)  C function 'function: 00A8F418'
-    (3) Lua function 'g' at file 'D:\trunk_git\sources\stacktraceplus\test\test.lua:10' (best guess)
-    	Local variables:
-    	 fun = table module
-    	 str = string: "hey"
-    	 tb = table: 027DCBE0  {dummy:1, blah:true, foo:bar}
-    	 (*temporary) = nil
-    	 (*temporary) = string: "text"
-    	 (*temporary) = string: "attempt to concatenate a nil value"
-    (4) tail call
-    (5) main chunk of file 'D:\trunk_git\sources\stacktraceplus\test\test.lua' at line 15
-    (6)  C function 'function: 002CA480'
+ ```console
+2019-06-16 01:40:49,476 [WARN ] [lua:2033] [string "package/start.lua"]:25: attempt to call a nil value (field 'v')
+Stack Traceback
+===============
+(2) Lua function 'nil' at line 25 of chunk '"package/start.lua"]'
+	Local variables:
+	 T = table: 0x7fcde400a580  {1:10, 2:20, name:HELLO}
+	 (*temporary) = nil
+	 (*temporary) = string: "USER"
+	 (*temporary) = Lua function 'nil' (defined at line 25 of chunk "package/start.lua"])
+	 (*temporary) = string: " (field 'v')"
+	 (*temporary) = string: "attempt to call a nil value (field 'v')"
+```
