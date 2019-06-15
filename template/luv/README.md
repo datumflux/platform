@@ -10,7 +10,9 @@ STAGE:플랫폼에 libuv 기능을 사용하기 위한 방법 방법은 다음�
   - **2019-06-08** commit [a35a3e4](https://github.com/luvit/luv/commit/a35a3e4453dc5c1bd74480c6c0738ee79f0a6a82) 빌드
 
   > 직접 빌드를 원하시는 분은 업로드된 build_luv.sh를 참고하여 빌드 하시면 됩니다.
-  
+
+> ### 설치
+
 **luv.so** 파일을 다운로드 받아 도커(docker)와 연동되는 디랙토리에 복사 합니다.
 
 ```console
@@ -23,7 +25,10 @@ $ docker run -it --rm -v $PWD/stage:/opt/stage datumflux/stage
 
 이후 start.lua에서 **luv** 를 로딩하여 구현을 하면 STAGE:플랫폼과 같이 실행이 됩니다.
 
+> ### 설명
+
 단, **luv** 를 정상적으로 사용하기 위해서는 uv.run() 함수의 실행 방법을 다음과 같이 변경해야 합니다.<br>
+
 만약, 기존의 방법으로 실행을 하게 되면 STAGE:플랫폼의 FAIL-OVER정책에 따라 프로세서가 재 시작 됩니다.
 
 ```lua
