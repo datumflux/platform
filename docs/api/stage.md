@@ -586,8 +586,9 @@
         ```
 
         ```lua
-          stage.signal("route:subscribe_id", value)
+          stage.signal("route:subscribe_id?argument", value)
         ```
+        > argument는 "route:@"에서 처리 여부의 확인을 위해 사용될 수 있습니다.
 
         subscribe_id 수신하고자 하는 stage가 여러 개인 경우 받을 수 있는 조건이 되는 하나의 stage에 전달됩니다.<p/> 
         만약, 모든 stage에 전달하고자 한다면 *"route:*subscribe_id"* 로 전달 하면 됩니다.
