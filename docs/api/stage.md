@@ -533,6 +533,7 @@
           -- route에서 메시지 처리여부를 확인하기 위해 호출됨.
           stage.waitfor("route:@", function (id, k)
              -- id에 대해 처리를 원하는 경우
+             -- id에 설정된 argument를 통해, 처리 여부를 판단할 수 있음.
              stage.signal(nil, k)
           end)
 
@@ -575,7 +576,7 @@
 
         ```mermaid
         graph LR;
-          START --> A(route:subscribe_id);
+          START --> A(route:subscribe_id?argument);
           A --> END
           A --> B(=return_callback)
           B --> C
@@ -600,7 +601,7 @@
           participant 처리1 stage
           participant 처리2 stage
 
-          요청 stage ->> route stage: "route:subscribe_id"
+          요청 stage ->> route stage: "route:subscribe_id?argument"
           opt 직접 전달 요청
              route stage -->> 처리1 stage: "처리 가능?"
              route stage -->> 처리2 stage: "처리 가능?"
