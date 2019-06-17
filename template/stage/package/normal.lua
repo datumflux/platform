@@ -31,22 +31,21 @@ local function LOGIN_user(socket, data)
 			return
 		end
 
-		local r = odbc.new("DF_DEVEL", function (adp)
+		-- odbc.new("DF_DEVEL", function (adp)
 
-			socket._user = { user_id = "KR001", nick_name = "HELLO" }
+			socket._user = { user_id = "KR001", nick_name = "HELLO", user_level = 0 }
 			socket._challenge = { }
-			stage.v("USERS", function (USERS)
+			__("USERS", function (USERS)
 				local user_id = socket._user.user_id
 				local nick_name = socket._user.nick_name
 
 				USERS.ID[user_id] = { nick_name, socket.id }
 				USERS.NICKNAME[nick_name] = { user_id, socket.id }
 			end)
-			return {
+			broker.signal( { _socket }, {
 				login = { socket._user, socket._challenge }
-			}
-		end)
-		broker.signal( { _socket }, r)
+			})
+		-- end)
 	end, socket.id)
 
 	socket("_waitfor", function (_waitfor)

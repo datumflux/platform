@@ -1,27 +1,16 @@
 
 -- SANDBOX 정책에 상관없이 자료형이 공유되도록 설정
 _ENV[""] = {
-}
+	"*BLACKLIST", "*MAINTENANCE_TIME", "*CONCURRENT", "*USERS",
+	["*updateConcurrentReport"] = function (index, now)
+		if now == nil then
+			now = os.time()
+		end
 
--- stage.submit()과 broker.ready()에 연결된 함수에서 사용하기 위한 변수를 설정
-__("BLACKLIST", {})
-__("MAINTENANCE_TIME", { 0, 0, {} })
-__("CONCURRENT", {
-	REPORT = {},
-	start = 0
-});
+		local tm = os.date("*t", now)
+		local today_index = (tm.hour * 60) + tm.min
 
-__("updateConcurrentReport", function ()
-
-	return function( index, now)
 		__("CONCURRENT", function (CONCURRENT)
-
-			if now == nil then
-				now = os.time()
-			end
-
-			local tm = os.date("*t", now)
-			local today_index = (tm.hour * 60) + tm.min
 			if CONCURRENT.REPORT[today_index] == nil then
 				CONCURRENT.REPORT[today_index] = { 0, 0, 0 }
 			end
@@ -29,7 +18,15 @@ __("updateConcurrentReport", function ()
 			return CONCURRENT
 		end)
 	end
-end)
+}
+
+-- stage.submit()과 broker.ready()에 연결된 함수에서 사용하기 위한 변수를 설정
+BLACKLIST = {}
+MAINTENANCE_TIME = { 0, 0, {} }
+CONCURRENT = {
+	REPORT = {},
+	start = 0
+}
 
 --
 stage.addtask(60 * 1000, function ()
@@ -103,10 +100,10 @@ print(process.id .. ": Initialize... STAGE[" .. process.stage .. "]")
 --
 -- 테스트를 위해 패킷 유형을 text로 설정하였습니다. 실제 서비스에서는 bson으로 변경 필요합니다.
 --
-__("USERS", {
+USERS = {
 	ID = {},
 	NICKNAME = {}
-})
+}
 
 local port = broker.ready("tcp://0.0.0.0:8081?text=2k,8k", function (socket, addr)
 	local ip = broker.ntoa(addr):split()[1] -- "IP:PORT" => "IP"
@@ -133,18 +130,26 @@ local port = broker.ready("tcp://0.0.0.0:8081?text=2k,8k", function (socket, add
 	end
 
 	updateConcurrentReport(1, now)
-	socket._waitfor = {}
+	socket("_waitfor", {})
 	print("LISTEN", ip)
 end)
 
 port.expire = 30000
 port.close = function (socket)
 
+	print("CLOSE", socket.id)
 	updateConcurrentReport(2)
-	for k, v in pairs(socket._waitfor) do
-		log4cxx.out("CANCEL - " .. k, v[1], v[2])
-		stage.waitfor(v[1], nil) -- { callback_id, start_time }
-	end
+	socket("_waitfor", function (_waitfor)
+
+		if _waitfor == nil then
+			return
+		end
+
+		for k, v in pairs(socket._waitfor) do
+			log4cxx.out("CANCEL - " .. k, v[1], v[2])
+			stage.waitfor(v[1], nil) -- { callback_id, start_time }
+		end
+	end)
 
 	if socket._user ~= nil then
 		local user_id = socket._user.user_id
@@ -152,8 +157,11 @@ port.close = function (socket)
 		__("USERS", function (USERS)
 			local v = USERS.ID[user_id] -- [ nickname, socket_id ]
 
-			USERS.NICKNAME[ v[1] ] = nil -- [ user_id, socket_id ]
-			USERS.ID[user_id] = nil
+			print("USERS", USERS.ID, USERS.NICKNAME, user_id, v)
+			if v ~= nil then
+				USERS.NICKNAME[ v[1] ] = nil -- [ user_id, socket_id ]
+				USERS.ID[user_id] = nil
+			end
 			return USERS
 		end)
 
@@ -164,59 +172,34 @@ port.close = function (socket)
 	end
 end
 
-port.receive = function (socket, _data)
+port.receive = function (socket, data)
 	--[[
 	{
 	   "cmd": value
 	}
 	]]
 	updateConcurrentReport(3)
-	stage.submit(socket.id, function (_socket, _data)
-		local socket = broker.f(_socket)
-		local data = stage.json(_data)
+	for k, v in pairs(data) do
 
-		--[[
-		print("RECEIVE: ", socket, data)
-		for k, v in pairs(data) do
-			print("----", k, v)
-		end
-		]]--
-		for k, v in pairs(data) do
-
-			local user_level = "normal"
-			if socket._user ~= nil then -- 로그인정보 생성 전
-				user_level = socket._user.level
-				if user_level == 0 then
-					user_level = "user"
-				elseif user_level >= 90 then
-					user_level = "operator"
-				end
+		local user_level = "normal"
+		if socket._user ~= nil then -- 로그인정보 생성 전
+			user_level = socket._user.level
+			if user_level == 0 then
+				user_level = "user"
+			elseif user_level >= 90 then
+				user_level = "operator"
 			end
-
-			stage.load(user_level .. "+" .. k, function (f)
-				local r = f(socket, v)
-				if r ~= nil then
-					socket.commit(r)
-				end
-			end)
 		end
-	end, socket.id, _data)
+
+		stage.load(user_level .. "+" .. k, function (f)
+			local r = f(socket, v)
+			if r ~= nil then
+				socket.commit(r)
+			end
+		end)
+	end
 end
 
---[[
-local V = stage.proxy({}, {
-	count = function (_this, edge, k, v)
-		print("COUNT: UPDATE - ", k, v)
-		if _this.count == nil then
-			_this.count = 1
-		end
-		_this.count = _this.count + 1
-	end
-})
-
-V.count = 10
-print("COUNT: ", V.count)
-]]--
 return function ()
     require('luv').run('nowait')
 end
