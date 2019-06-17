@@ -214,6 +214,32 @@
 
    또한, 동기적인 실행을 통해 처리가 블록되는 현상을 제거하기 위해 모든 처리결과는 비동기로 처리됩니다.
 
+   > #### 쓰레드에서 샌드박스 정책이 설정된 변수와 함수는 스냅샷되어 공유가 됩니다. 
+   
+   만약, 변수에 대한 무결성의 확인이 필요하다면 *__.변수명 = function (V)* 형태로 접근하여 처리될수 있습니다.
+
+   ```lua
+    _ENV[""] = { "*hello", "*HELLO" }
+
+    function hello(msg)
+        print("HELLO", msg)
+    end 
+
+    __.HELLO = function(V)
+      return "HELLO"
+    end
+
+    print("MAIN", thread.id)
+    stage.submit(0, function ()
+        __.HELLO = function (HELLO)
+           print("THREAD", thread.id, HELLO)
+        end
+        hello("THREAD")
+    end)
+   ```
+
+   이와 같이 접근해 무결성을 유지할 수 있습니다.
+
 > ### 3. *stage.waitfor()* 과 *stage.signal()* 을 이용한 비동기 결과 반환
 
   STAGE:플랫폼에서 처리 결과를 받기위해서는 *stage.waitfor()* 와 *stage.signal()* 을 사용하는 방법이 있습니다.
