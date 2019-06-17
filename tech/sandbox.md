@@ -135,7 +135,7 @@
    ``` 
    협의되지 않은 전역변수에 대한 공유는 제한되므로 변수 사용에 있어 개발의  실수를 줄이는 역할을 수행합니다.
 
-> ### 2. stage.submit()을 통한 쓰레드 분리
+> ### 2. [*stage.submit()*](/datumflux/stage/blob/master/docs/api/stage.md#stage-submit) 을 통한 쓰레드 분리
 
    대부분의 스크립트 엔진은 쓰레드를 지원하지 않습니다. 가장 큰 이유는 실행속도에 대한 제한과 전역변수에 대한 접근에 있어 오류의 가능성을 포함하고 있기 때문입니다.
 
@@ -240,7 +240,7 @@
 
    이와 같이 접근해 무결성을 유지할 수 있습니다.
 
-> ### 3. *stage.waitfor()* 과 *stage.signal()* 을 이용한 비동기 결과 반환
+> ### 3. [*stage.waitfor()*](/datumflux/stage/blob/master/docs/api/stage.md#stage-waitfor) 과 [*stage.signal()*](/datumflux/stage/blob/master/docs/api/stage.md#stage-signal) 을 이용한 비동기 결과 반환
 
   STAGE:플랫폼에서 처리 결과를 받기위해서는 *stage.waitfor()* 와 *stage.signal()* 을 사용하는 방법이 있습니다.
 
