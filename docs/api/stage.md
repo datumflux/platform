@@ -954,11 +954,58 @@
     |id|i|쓰레드 아이디|
     |tick|d|초단위 시간|
 
+
+    >#### <a id="thread-new"></a> thread.new(function (v..., data...) \[, v...])
+    * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 쓰레드 함수를 등록합니다.
+    * **입력**
+      * function() - 실행 함수
+      * v... - *(생략 가능)* function()에 전달할 값
+    * **반환** <span style="white-space: pre;">&#9;&#9;</span> thread_object
+    * **설명**<br>
+      *stage.submit(0, function (...))* 과 동일한 형태로 처리가 되어지나, *thread.signal()* 함수를 사용해 메시지를 보낼 수 있다는 차이가 있습니다.
+
+      *thread.signal()* 함수를 통해 *thread_object.waitfor()* 로 메시지를 전달할 수 있습니다.
+
+    >#### <a id="thread-waitfor"></a> thread.signal(v)
+    * **기능**  <span style="white-space: pre;">&#9;&#9;</span> thread.new()로 생성된 함수 내에서 *thread_object.waitfor()* 함수로 메시지를 전달 합니다.
+    * **입력**
+      * v - 전달할 메시지
+      * v... - *(생략 가능)* function()에 전달할 값
+    * **설명**<br>
+      *thread.new()*를 통해  생성된 함수에서 메시지를 전달할 때 사용됩니다.
+
+    >#### <a id="thread-waitfor"></a> thread_object.waitfor(function (v..., data...) \[, v...])
+    * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지를 *s*를 처리 할수 있는 함수를 등록합니다.
+    * **입력**
+      * function() - 실행 함수
+      * v... - *(생략 가능)* function()에 전달할 값
+    * **설명**<br>
+      thread.signal()로 전달되는 메시지를 처리할수 있는 함수를 등록합니다. 
+
+      등록된 함수는, 쓰레드가 소멸되면 같이 제거됩니다.
+      만약, 별도로 제거하기를 원한다면 
+      ```lua
+        local to = thread.new(function (arg)
+            ...
+        end, "HELLO")
+
+        to.waitfor(nil)
+      ```
+      과 같은 방식으로 제거 가능합니다.
+
   * 참고
     * [process](#process-property)
 
   * **예제**
     ```lua
-      print(process.id .. ": Initialize... STAGE[" .. process.stage .. "]");
+      local to = thread.new(function (arg)
+          print("THREAD", thread.id, arg)
+          thread.signal("HELLO")
+          return "HELLO-RETURN"
+      end, "HELLO")
+
+      to.waitfor(function (v)
+          print("THREAD-MESSAGE", v)
+      end)
     ```
 
