@@ -321,5 +321,42 @@
 
    > *TIP* stage.signal()을 통해 원격에서 실행중인 *STAGE:플랫폼* 과 함수와 메시지를 공유할 수 있습니다.
 
+   > #### 업데이트를 통해 쓰레드용 결과 반환 방법이 추가
 
+   ```lua
+    _ENV[""] = { "*HELLO" }
+
+    RESULT = "MAIN"
+    HELLO = "HELLO"
+    print("MAIN", thread.id)
+    local to = thread.new(function ()
+        print("THREAD", thread.id, HELLO)
+        thread.signal("THREAD")
+        return "FINISH" -- thread.single("FINISH")        
+    end)
+
+    to.waitfor(function (msg)
+        print("HELLO", msg, RESULT)
+    end)
+   ```
+   형태로 구성을 하게 됩니다. 
+   
+   실행 결과는
+   ```console
+   ken@ubuntu-vm:~/lua$ docker run -it --rm -v $PWD/stage:/opt/stage datumflux/stage
+   ...
+    2019-06-18 23:09:17,046 [INFO ] [lua:535] SCRIPT 'start' - 'package/start.lua'
+    MAIN	140255821305408
+    THREAD	140255645185792	HELLO
+    HELLO	THREAD	MAIN
+    HELLO	FINISH	MAIN
+   ...
+   ken@ubuntu-vm:~/lua$ 
+   ``` 
+   
+   이처럼, 쓰레드의 결과를 받기위한 처리가 간략하게 단방향의 형태로만 처리가 됩니다. *(양방향 처리 구성이 가능하게 설정하는 경우 처리방식에 따라 기능을 처리하지 못하는 **DEAD-LOCK 상황** 이 발생될 수 있어 제한됩니다.)*
+   
+   기존의 *stage.waitfor()* 와 다르게 *to.waitfor()* 로 연결된 함수는 *thread.new()* 함수의 처리가 완료되면 제거됩니다. 
+
+   > *thread.signal()* 과 *to.waitfor()* 함수는 *thread.new()* 로 연결된 함수에만 적용 됩니다.
 
