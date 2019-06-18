@@ -8,7 +8,7 @@
 
   그러나, 여러 개발자가 개발을 한다면 예측하지 못한 결과를 만들어 낼수도 있어 이에 대한 완전한 분리가 필요합니다.
 
-  일반인 다음 스크립트 코드를 보면
+  스크립트 코드를 보면
    ```lua
     local co = coroutine.create(function ()
         RESULT = 0
@@ -26,7 +26,7 @@
     end
    ```
 
-   을, 표준 lua에서 실행하면
+   을, 표준 lua에서 실행해서
 
    ```console
    ken@ubuntu-vm:~/lua$ bin/lua test.lua 
@@ -52,7 +52,9 @@
     RESULT	10
    ken@ubuntu-vm:~/lua$ 
    ```
-   전역 변수에 접근이 가능하여 변경된 값으로 표시되지만, *STAGE:플랫폼 for LUA* 에서는
+   결과를 얻었습니다. 전역 변수에 접근이 가능하여 변경된 값으로 표시되지만, 
+   
+   *STAGE:플랫폼 for LUA* 에서 실행한 결과는
 
    ```console
    ken@ubuntu-vm:~/lua$ docker run -it --rm -v $PWD/stage:/opt/stage datumflux/stage
