@@ -1,5 +1,6 @@
 const BSON = require('bson')
 
+/* */
 function getNetworkInterfaceIP(device) {
 	if (require('net').isIPv4(device))
 		return device;
@@ -20,14 +21,7 @@ function getNetworkInterfaceIP(device) {
 	return null;	
 }
 
-function bytesToHex(bytes) {
-	for (var hex = [], i = 0; i < bytes.length; i++) {
-			hex.push((bytes[i] >>> 4).toString(16));
-			hex.push((bytes[i] & 0xF).toString(16));
-	}
-	return hex.join("");
-}
-
+/* */
 function Feedback(r__i, i__c) {
 	for (var k in r__i) {
     if (r__i.hasOwnProperty(k)) this[k] = r__i[k];
