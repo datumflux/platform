@@ -710,7 +710,7 @@
         일정 시간이후, 티켓 할당이 중지되는 카테고리 생성
 
         ```lua
-          stage.signal("ticket:@category_name@A", [ limit_ticket, close_time ]);
+          stage.signal("ticket:@category_name@A", { limit_ticket, close_time });
         ```
         을 통해, close_time 이후에 티켓 할당을 중지되며 카테고리를 소멸 됩니다.
         단, 이미 할당 받은 티켓은 사용이 유지 됩니다.
