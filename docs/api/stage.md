@@ -184,12 +184,11 @@
        end, { 10, 20, 30 })
     ```
 
->#### <a id="stage-signal"></a> stage.signal(s1, v \[, s2])
-  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지 v를 *s1* 에게 전달할때, s2에 위치한 프로세서(서버)로 메시지를 전송합니다.
+>#### <a id="stage-signal"></a> stage.signal(t, v...)
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지 v를 *t* 에게 전달합니다.
   * **입력**
-    * s1 - 메시지 ID
-    * v - 메시지
-    * s2 - *(생략 가능)* stage.aton() 또는 전달받은 프로세서(서버)의 정보
+    * t - 메시지 정보
+    * v... - 메시지
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 처리 결과
   * **설명**<br>
      해당 함수는 메시지를 전달하기 위한 함수로 서버간의 이동을 포함하여 폭 넓게 사용됩니다.
@@ -201,10 +200,47 @@
      
      의 용도로 사용하여 메시지의 분산 처리가 가능합니다.
 
-     * *s1* 이 nil로 설정되면 waitfor()에 대한 응답을 전달 합니다.
+     *v* 는 여러개의 값을 가질수 있으면 만약, 여러개가 정의되면 전달되는 함수에 여러개의 인자로 전달이 됩니다.
+
+        ```lua
+        stage.waitfor("local_callback", function (a, b, c)
+          -- "CALL", "HELLO", "STAGE", "PLATFORM"
+          print("CALL", a, b, c)
+        end)
+
+        stage.signal("local_callback", "HELLO", "STAGE", "PLATFORM");
+        ```
+
+     *t* 는 용도에 따라, 다양한 형태로 정의하여 사용이 가능합니다.
+     
+     * *t* 가 nil로 설정되면 waitfor()에 대한 응답으로 처리가 됩니다.
        > 만약, waitfor()에 등록된 함수가 아닌 경우 오류로 처리됩니다.
 
-     * *s1* 의 설정은 *target_stage_id* 를 설정하여 특정 영역에 전달할수 있습니다.
+        ```lua
+        stage.waitfor("local_callback", function (v)
+           print("STEP #2 ", v.msg)
+           stage.signal(nil, v.msg);
+        end)
+        ```
+
+     * *t* 를 통해, 특정 stage로 직접 데이터를 전달할 수 있습니다.
+
+        |순서|자료형|설명|
+        |:---:|:---:|:---|
+        |1|s|CALLBACK ID|
+        |2|s|네트워크 주소|
+        |3|i|처리 허용 시간|
+
+        *CALLBACK ID* 는 항상 처음에 설정이 되어야 하며, 이후에 설정되는 값은 생략이 가능 합니다.
+
+        ```lua
+        local addr = broker.aton("udp://224.0.0.1:8082", {})[1];
+        stage.signal({"callback_id", addr}, "HELLO")
+        ```
+
+        와 같이 사용이 가능합니다.
+
+     * *t*가 문자열 형태의 *target_stage_id* 를 설정하면 지정된 stage에 전달할수 있습니다.
         > *target_stage_id*가 자신인 경우 생략 가능합니다.<br>
         > *":메시지ID"* 로 사용되는 경우 외부 라우팅을 거치지 않고 내부 전달 메시지로 처리 됩니다. (해당 경우 동기처리 방식으로 메시지를 처리합니다.) <br>
 
@@ -225,7 +261,7 @@
         print("STEP #3")
         ```
 
-     * 메시지를 보내는 현재 stage_id를 포함하여 전달하고자 하는 경우에는 *+* 를 사용해 *s1* 을 구성할수 있습니다.
+     * 메시지를 보내는 현재 stage_id를 포함하여 전달하고자 하는 경우에는 *+* 를 사용해 *t* 를 구성할수 있습니다.
      
           target_stage_id+메시지ID
 
@@ -286,7 +322,7 @@
         })
         ```
 
-       를 *s1*으로 사용하고, 처리가 가능한 순서가 되면 *반환_메시지ID* 가 호출되어 처리를 진행할수 있습니다. 
+       를 *t* 로 사용하고, 처리가 가능한 순서가 되면 *반환_메시지ID* 가 호출되어 처리를 진행할수 있습니다. 
        
        > *반환_메시지ID* 를 전달 받아 시작이 된 경우 동일한 *">명령ID.\*"* 를 재 전송하여 처리 시간을 연장 할수 있습니다.
 
@@ -301,7 +337,7 @@
 
            <명령ID.*
 
-       를 *s1*에 설정하여 전송하여 사용이 완료되었음을 알려 주어야 합니다. 그러지 않는 경우 타임아웃(100 msec)이후 자동 해제 됩니다.
+       를 *t* 에 설정하여 전송하여 사용이 완료되었음을 알려 주어야 합니다. 그러지 않는 경우 타임아웃(100 msec)이후 자동 해제 됩니다.
 
        > **주)** 해당 처리는 *#startup* 에 연결된 stage만 영향을 받습니다.
 
@@ -687,7 +723,7 @@
           end)
 
           ...
-          stage.signal("ticket:odbc=login_query@A", { socket.id, msg.userid})
+          stage.signal("ticket:odbc=login_query", socket.id, msg.userid)
         ```
         다음과 같은 형태로 처리할 수 있습니다.
 
@@ -713,7 +749,7 @@
         일정 시간이후, 티켓 할당이 중지되는 카테고리 생성
 
         ```lua
-          stage.signal("ticket:@category_name@A", { limit_ticket, close_time });
+          stage.signal("ticket:@category_name", limit_ticket, close_time);
         ```
         을 통해, close_time 이후에 티켓 할당을 중지되며 카테고리를 소멸 됩니다.
         단, 이미 할당 받은 티켓은 사용이 유지 됩니다.
