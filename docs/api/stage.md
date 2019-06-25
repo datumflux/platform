@@ -655,6 +655,17 @@
 
         > 사용을 마친 *feedback_id*는 반드시 *stage.waitfor(feedback_id, nil)* 로 제거해야 합니다.
 
+        > 추가. 1
+
+        티켓의 사용 중, 강제로 제거되거나 취소되는 경우에 해당 정보는 다음 함수를 통해 통보가 됩니다.
+
+        ```lua
+          stage.waitfor("ticket:@", function (result)
+             -- result
+             --   cancel: { ticket_id: callback_id }
+          end)
+        ```
+        -----
 
         데이터를 처리할 수 있는 상태가 되면, 기본값으로 1초 동안 권한이 유지 됩니다. 만약, 처리 시간이 길어질것 같다면 
 
@@ -679,6 +690,30 @@
 
         설정에 사용되는 *category_id*는 미리 정의되어야 하는 설정을 *stage.json*에서 설정이 됩니다.
 
+        > 추가. 2
+
+        티켓을 받았거나, 요청을 한 stage에 메시지를 다음과 같은 보낼 수 있습니다.
+
+        ```lua
+          stage.signal("ticket:=category", value)
+        ```
+
+        전달된 메시지는, 각 티켓을 요청한 stage 에 요청이 전달됩니다.
+        ```lua
+          stage.waitfor("ticket:category", function (value) 
+             ...
+          end)
+        ```
+
+        > 추가. 3
+
+        일정 시간이후, 티켓 할당이 중지되는 카테고리 생성
+
+        ```lua
+          stage.signal("ticket:@category_name@A", [ limit_ticket, close_time ]);
+        ```
+        을 통해, close_time 이후에 티켓 할당을 중지되며 카테고리를 소멸 됩니다.
+        단, 이미 할당 받은 티켓은 사용이 유지 됩니다.
 
   * **예제**
     ```lua
