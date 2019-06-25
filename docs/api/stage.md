@@ -202,14 +202,14 @@
 
      *v* 는 여러개의 값을 가질수 있으면 만약, 여러개가 정의되면 전달되는 함수에 여러개의 인자로 전달이 됩니다.
 
-        ```lua
-        stage.waitfor("local_callback", function (a, b, c)
-          -- "CALL", "HELLO", "STAGE", "PLATFORM"
-          print("CALL", a, b, c)
-        end)
+      ```lua
+      stage.waitfor("local_callback", function (a, b, c)
+        -- "CALL", "HELLO", "STAGE", "PLATFORM"
+        print("CALL", a, b, c)
+      end)
 
-        stage.signal("local_callback", "HELLO", "STAGE", "PLATFORM");
-        ```
+      stage.signal("local_callback", "HELLO", "STAGE", "PLATFORM");
+      ```
 
      *t* 는 용도에 따라, 다양한 형태로 정의하여 사용이 가능합니다.
      
