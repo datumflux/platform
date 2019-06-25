@@ -643,7 +643,9 @@
 
         처리된 결과는, 다음과 같은 방법으로
         ```lua
-          stage.waitfor("feedback_id", function (result)
+          stage.waitfor("feedback_id", function (request_id, result)
+             -- request_id: 요청한 메시지 (예: "ticket:category=callback_id?feedback_id")
+             --
              -- result: true    처리 완료
              --         false   처리 실패
              --         @0x...  ticket_id
