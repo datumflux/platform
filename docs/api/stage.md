@@ -662,9 +662,10 @@
         티켓의 사용 중, 강제로 제거되거나 취소되는 경우에 해당 정보는 다음 함수를 통해 통보가 됩니다.
 
         ```lua
-          stage.waitfor("ticket:@", function (result)
-             -- result
-             --   cancel: { ticket_id: callback_id }
+          stage.waitfor("ticket:@", function (result_id, result)
+             -- result_id
+             --   cancel: 취소되는 티켓
+             --   result: { ticket_id: callback_id }
           end)
         ```
         -----
