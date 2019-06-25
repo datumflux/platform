@@ -187,7 +187,7 @@
 >#### <a id="stage-signal"></a> stage.signal(t, v...)
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지 v를 *t* 에게 전달합니다.
   * **입력**
-    * t - 메시지 정보
+    * t - 메시지를 받을 상대방 ID
     * v... - 메시지
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 처리 결과
   * **설명**<br>
