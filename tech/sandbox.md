@@ -227,15 +227,15 @@
         print("HELLO", msg)
     end 
 
-    __.HELLO = function(V)
+    __("HELLO", function(V)
       return "HELLO"
-    end
+    end)
 
     print("MAIN", thread.id)
     stage.submit(0, function ()
-        __.HELLO = function (HELLO)
+        __("HELLO", function (HELLO)
            print("THREAD", thread.id, HELLO)
-        end
+        end)
         hello("THREAD")
     end)
    ```
