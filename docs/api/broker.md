@@ -3,6 +3,7 @@
   * [broker.join](#broker-join)
   * [broker.close](#broker-close)
   * [broker.signal](#broker-signal)
+  * [broker.submit](#broker-submit)
   * [broker.f](#broker-f)
   * [broker.ntoa](#broker-ntoa)
   * [broker.aton](#broker-aton)
@@ -257,6 +258,37 @@
            ["logout"] = ""
        })
     ```
+
+>#### <a id="broker-submit"></a> broker.submit(i, function (i, v...)\[, v...])
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *i* 소켓의 function()을 중복되지 않도록 실행합니다.
+  * **입력**
+    * i - 소켓
+    * function (i, v...) - 실행하고자 하는 함수
+    * v... - function()에 전달하고자 하는 값
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 없음
+  * **설명**<br>
+
+    stage.submit()과 동일하게 동작하며, 단 소켓에 대한 중복 실행이 제한됩니다.
+
+    연결되는 상태는
+    ```lua
+    stage.submit(socket, function (socket, v...) 
+    ...
+    end, socket, v...)
+    ```
+    와 같습니다.
+
+    * function ()의 반환값은 다시 함수를 실행하기 위한 시간을 의미합니다.
+      > 값을 반환하지 않거나 0 이하의 값을 반환하면 더 이상 실행되지 않습니다.
+
+  * **예제**
+    ```lua
+       broker.submit(socket, function (socket, v)
+          print("RANDOM", socket.id, v[math.random(0, 2)])
+          return 1000; --- 1초 간격으로 재 실행
+       end, { 10, 20, 30 })
+    ```
+
 >#### <a id="broker-ntoa"></a> broker.ntoa(s \[, t])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 네트워크 주소를 문자열로 변환합니다.
   * **입력**
