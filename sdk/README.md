@@ -10,6 +10,14 @@ STAGE:플랫폼의 stage 개발에 사용됩니다.
 
 를 통해, 기존에 개발된 stage와 통신을 하고 관리 정책을 참여할 수 있습니다.
 
+#### 빌드 환경
+
+  1. Ubuntu 18.04.2 LTS
+
+  Windows 10 이상을 사용하시는 경우에는 [Windows Subsystem for Linux](https://docs.microsoft.com/ko-kr/windows/wsl/install-win10) 을 사용하는 방법도 있습니다.
+
+#### 적용
+
 개발된 stage는 **build.sh** 를 통해 애드온으로 빌드가 되며,
 빌드된 stage는 stage.json에 다음과 같은 형식으로 정의하여 사용할 수 있습니다.
 
