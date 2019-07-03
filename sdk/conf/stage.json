@@ -1,0 +1,8 @@
+{
+	"#startup":[ 
+		["./examples.so+example"]
+	],
+
+	"./examples.so": {
+	}
+}
