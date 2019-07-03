@@ -12,9 +12,30 @@ STAGE:플랫폼의 stage 개발에 사용됩니다.
 
 #### 빌드 환경
 
-  1. Ubuntu 18.04.2 LTS
+  - Ubuntu 18.04.2 LTS
 
   Windows 10 이상을 사용하시는 경우에는 [Windows Subsystem for Linux](https://docs.microsoft.com/ko-kr/windows/wsl/install-win10) 을 사용하는 방법도 있습니다.
+
+  배포판(Linux) 설치 이후
+  ```console
+  $ sudo apt-get install g++ gdb
+  ```
+
+#### 제한 사항
+
+  STAGE:플랫폼은 prefork 방식을 사용하고 있어, 직접적인 gdb(디버거) 접근이 불가능합니다.
+
+  프로세서로 연결을 하더라도 직접적인 확인이 어려운 부분이 있어, 실행전에
+
+  ```console
+  $ ulimit -c unlimited
+  ```
+
+  설정 후, 크래쉬가 발생될때 생기는 core 파일을 통해 디버깅을 진행할 수 있습니다.
+
+  ```console
+  $ gdb single core
+  ```
 
 #### 적용
 
