@@ -1,4 +1,4 @@
-# STAGE for LUA
+# [STAGE for LUA](https://github.com/datumflux/stage/raw/master/stage.pdf)
 
 **STAGE:플랫폼** 은 서비스를 개발하기 위해 사용되는 백엔드 개발 솔루션입니다. 
 
