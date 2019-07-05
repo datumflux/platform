@@ -66,8 +66,6 @@ int (*main)(int, char **, struct sockaddr *, socklen_t, void *);
 #define _DEBUG(...)				LOG4CXX_DEBUG(logger, std::format(__VA_ARGS__).c_str())
 #define _TRACE(...)				LOG4CXX_TRACE(logger, std::format(__VA_ARGS__).c_str())
 
-#define _OBJECT_TRACE()	        _TRACE("[%u.%p] - %s:%d", pthread_self(), this, __FUNCTION__, __LINE__)
-
 /*!
  * \brief socktype으로 처리할수 있는 서버의 주소를 얻는다.
  *
