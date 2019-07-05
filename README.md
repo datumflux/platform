@@ -31,6 +31,7 @@
   * [odbc](docs/api/odbc.md#odbc-ns)
 
 * [LUA 메뉴얼](http://www.lua.org/manual/5.3/)
+  * [15분 만에 루아배우기](http://tylerneylon.com/a/learn-lua/)
 
 * 개발
   * [시작하기](template/)
