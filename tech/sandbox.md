@@ -2,6 +2,77 @@
 
  이는 기존의 정책이 다수의 개발자가 사용하기에 부적합한 구조이기에, 이를 성능과 안정성을 유지하면서 기존의 구조적인 특징을 유지하기 위한 방법으로 다음과 같은 방법을 선택 하였습니다.
 
+> ### r890 - 업데이트 이후
+  샌드박스 정책이 설정된 변수 중에, 테이블을 갖는 변수는 다음과 같은 접근이 허용 됩니다.
+
+  ```lua
+     t[{10, 20}] = 10
+  ```
+  lua는 일반적으로, 문자열과 숫자를 제외하고는 print()로 출력되는 값을 그대로 사용합니다.
+  ```console
+      table: 0x7fe4ef125240	100
+  ```
+
+  r890이후 부터는 샌드박스 정책이 설정된 변수에 한해서 **table: 0x00000....0** 형태의 값이 아닌 새로운 값으로 자동 변환을 지원합니다.
+
+  **사용하기 위해서는 두가지의 조건이 맞추어져야 합니다.**
+
+  1. _ENV[""] = { ... } 또는 stage.proxy()에 정의되어야 합니다.
+  2. stage.index = function (k, i, t) 함수를 정의해야 합니다.
+
+     |이름|자료형|설명|
+     |:--:|:----:|:---|
+     |k|table?|인덱스로 사용하고자 한 키 (테이블, 객체 등)|
+     |i|string|호출 위치 (thread, process, proxy, broker 등)|
+     |t|table?|인덱스로 접근하고자 하는 테이블?|
+
+     반환값으로 nil이 반환되면 위치에 접근(저장)하지 않습니다.
+
+     ```lua
+     stage.index = function (k)
+       return k[1] .. "." .. k[2]
+     end
+     ```
+
+  **예제)**
+  ```lua
+_ENV[""] = { "MAP",   }
+
+stage.index = function (r, i, t)
+    print("CALL", i, t, r)
+    for k, v in pairs(t) do
+        print("--", k, v)
+    end
+    for k, v in pairs(r) do
+        print("  ", k, v)
+    end
+    return "HELLO"
+end
+
+MAP = {}
+print("====")
+MAP[{10, 20}] = 100
+print("====")
+for k, v in pairs(MAP) do
+    print(">>", k, v)
+end
+print("MAP = ", MAP[{10, 20}])  
+  ```
+
+  **결과)**
+  ```console
+CALL	thread	table: 0x7fa98a5251c0	table: 0x7fa98a5252c0
+  	1	10
+  	2	20
+====
+>>	HELLO	100
+CALL	thread	table: 0x7fa98a5251c0	table: 0x7fa98a525600
+--	HELLO	100
+  	1	10
+  	2	20
+MAP = 	100  
+  ```
+
 > ### 1. coroutine.create()에서 격리되는 전역변수
 
   lua 스크립트의 coroutine 처리 정책은 로컬변수와 스크립트 실행코드만 분리하고 전역변수는 공유하는 방법을 사용하고 있습니다.
