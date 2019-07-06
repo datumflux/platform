@@ -6,7 +6,6 @@
   * [stage.signal](#stage-signal)
   * [stage.waitfor](#stage-waitfor)
   * [stage.proxy](#stage-proxy)
-  * [stage.v](#stage-v)
 * [log4cxx](#log4cxx-ns)
 
 * 프로퍼티
@@ -894,39 +893,6 @@
             v.count = 9;
             v.hello = "hello";
         end);
-    ```
-
->#### <a id="stage-v"></a> stage.v(s \[, v | function (v)])
-  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *s*로 정의되는 값 *v*를 관리합니다.
-  * **입력**
-    * s - *v*의 이름
-    * v - *(생략 가능)* 관리하는 값
-    * function (v) - *(생략 가능)* *s*에 값을 처리하는 함수
-  * **반환** <span style="white-space: pre;">&#9;&#9;</span> *s*의 값
-  * **설명**<br>
-    
-    stage.v()를 통해 관리되는 함수는 **샌드 박스**의 유무와 상관없이 접근할수 있습니다.
-
-    *v* 또는 *function (v)* 가 정의되지 않은 경우에는 *s*의 값을 반환합니다.
-    *v* 가 지정된 경우에는 
-       * *v* 가 nil인 경우에는 *s*가 삭제 됩니다.
-       * 그 외의 경우에는 *s*에 설정된 값이 지정됩니다.
-
-    *function (v)* 은 기존 값이 v로 전달이 되며 함수의 반환값으로 변경됩니다.
-
-    * *function (v)* 의 반환값은 무조건 *s*의 값으로 변경 됩니다.(nil 포함)
-    * 값 삭제
-        ```lua
-            stage.v(name, nil)
-        ```
-
-  * **예제**
-    ```lua
-       ...
-       stage.v("name", function (v)
-          ...
-          return v + "_HELLO";
-       end);
     ```
 
 >## <a id="log4cxx-ns"></a> log4cxx.*level*(s)
