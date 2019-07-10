@@ -2,6 +2,64 @@
 
  이는 기존의 정책이 다수의 개발자가 사용하기에 부적합한 구조이기에, 이를 성능과 안정성을 유지하면서 기존의 구조적인 특징을 유지하기 위한 방법으로 다음과 같은 방법을 선택 하였습니다.
 
+> ### r944 - 업데이트 이후
+
+  *pairs(_SANDBOX)* 에서 Lua의 기본 정책에 해당되지 않는 정보가 표시됩니다.
+  
+  |변수명|설명|비고|
+  |:----:|:----:|:---|
+  |NAME|로컬 변수| |
+  |*NAME|프로세서 전역변수| _SANDBOX[""] = { "*NAME" ... |
+
+  샌드박스가 생성이되면, 접근시 스냅샷을 생성하여 사용하게 되는데 스냅샷에 포함되지 않는 정보는 *coroutine* 정보와 *userdata* 정보는 포함되지 않습니다.
+
+  * 해당 변수는 gc에 문제가 발생될 가능성이 있어 제한됩니다.
+
+  *pairs(_G)* 는 Lua의 기본 정책을 유지합니다.
+
+  * 공유되는 모든 변수가 표시됩니다.
+
+> ### r940 - 업데이트 이후
+
+  LuaJIT에서 사용할 수 있습니다. 
+  
+  샌드박스 정책 설정을 위해 *_SANDBOX[""]* 가 추가 되었습니다. 
+  
+  |변수명|Lua|LuaJIT|비고|
+  |:----:|:-:|:----:|:---|
+  |_ENV|O|X| LuaJIT에는 _ENV가 존재하지 않음.|
+  |_SANDBOX|O|O| |
+
+  사용예)
+  ```lua
+  _SANDBOX[""] = { "*HELLO", "TEST" }
+  --
+  print("HELLO", HELLO, TEST) -- "HELLO", nil, nil
+  HELLO = "HI"
+  stage.waitfor("callback", function (v)
+      print("CALLBACK", HELLO, v) -- "CALLBACK", "--STAGE", "HAHA"
+  end)
+
+  co = coroutine.create(function (a,b,c)
+     print("co", a,b,c, HELLO, TEST) -- "co",1,2,3,"HI","1122"
+     TEST = "HELLO"
+     coroutine.yield()
+     print("co", a,b,c, HELLO, TEST) -- "co",1,2,3,"HI","2233"
+  end)
+
+  TEST = "1122"
+  coroutine.resume(co, 1, 2, 3)
+  TEST = "2233"
+  coroutine.resume(co)
+  print("TEST", TEST)
+
+  stage.submit(0, function ()
+      print("HELLO", HELLO) -- "HELLO", "HI"
+      HELLO = "--STAGE"
+      stage.signal("callback", "HAHA")
+  end)  
+  ```
+
 > ### r890 - 업데이트 이후
   샌드박스 정책이 설정된 변수 중에, 테이블을 갖는 변수는 다음과 같은 접근이 허용 됩니다.
 
