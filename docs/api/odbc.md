@@ -57,7 +57,7 @@
     ```
     데이터베이스의 유형 (*.queryDriver*)는 쿼리에 컬럼의 이름을 표시하는 방법과 자동증가된 값을 얻는 방법등의 차이를 구분하기 위해 사용되는 값 입니다.
 
-      *mysql*은 자동증가된 값을 얻기 위해 *"SELECT LAST_INSERT_ID"* 를 사용하지만,<br>
+      *mysql*은 자동증가된 값을 얻기 위해 *"SELECT LAST_INSERT_ID()"* 를 사용하지만,<br>
       *mssql*은 "SELECT SCOPE_IDENTITY()"를 사용합니다.
 
       > 추가적인 지원이 필요하신 경우 support@datumflux.co.kr 로 요청 부탁드립니다.
@@ -489,6 +489,81 @@
        for k, v in pairs(rows) do
             print("SELECT", k, v);
        end       
+    ```
+
+>#### <a id="resultset-near"></a> resultset.near(row, [s | t])
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 얻어진 결과에서 *t* 위치의 데이터를 얻습니다.
+  * **입력** 
+    * row - resultset.fetch()의 반환 객체에 연결된 객체
+    * s - 얻고자 하는 객체의 값
+    * t - 객체가 위치한 값의 진입 순서
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 객체
+  * **설명**<br>    
+
+    *s* 는 row에서 직접 접근이 가능한 값을 지정하며,<br>
+    *t* 는 row에서 여러 단계에 걸쳐서 접근해야 하는 위치의 값을 지정하는데 사용됩니다.
+
+    > row는 *resultset.fetch()* 의 결과 뿐만 아니라 row[*KEY*] 로 반환된 객체도 가능합니다. (값은 불가능)
+
+       예를 들어,
+       
+       | 0 | 1 | 2 | 3 | ... |
+       |:---:|:---:|:---:|:---:|:---:|
+       | A0 | B0 | C0 | D0 | ... |
+       | A0 | B0 | C1 | D1 | ... |
+
+       로 저장된 값에서 D1을 얻고자 한다면 
+       ```lua
+          local r = rs.near(rows, { "A0", "B0", "C1", "D1" })
+       ```
+
+       "B0"의 모든 하위 값을 얻고자 한다면
+       ```lua
+          local r = rs.near(rows, { "A0", "B0" })
+       ```
+       
+       또 다른 접근 방법인
+       ```lua
+         print(rows["A0"]) -- 없다면 추가로 처리
+       ```
+       와 같은 접근에서는 *"A0"* 객체가 없으면 생성이 되지만, **rs.near()** 는 생성되지 않습니다.
+
+       **rows** 객체에서 여러 객체를 확인하는 방법은
+       ```lua
+          if rs.near(rows, "A0") and rs.near(rows, "A1") then
+             ...
+          end
+       ```
+       의 방식과
+       ```lua
+          if rows("A0") and rows("A1") then
+             ...
+          end
+       ```
+
+       또는 
+       ```lua
+          local r = rows({"A0", "A1"})
+          if r["A0"] and r["A1"] then
+             ...
+          end
+       ```
+       으로 사용 가능합니다.
+
+       ```lua
+          if rs.near(rows, {"A0", "B0"}) and rs.near(rows, {"A1", "B0"}) then
+             ...
+          end
+       ```
+       의 경우에는 **rows()** 로 접근이 불가능 합니다. **rows()** 는 하위 객체로 접근하지 않습니다.
+
+       해당 함수를 존재 이유는 하위 객체 접근에 대한 편의성을 위해 제공됩니다.
+
+  * 참고
+    * [resultset.fetch](#resultset-fetch)
+
+  * **예제**
+    ```lua
     ```
 
 >#### <a id="resultset-apply"></a> resultset.apply(row \[, table] \[, function (t1, t2)])
