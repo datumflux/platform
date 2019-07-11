@@ -543,8 +543,18 @@
 
        또는 
        ```lua
-          local r = rows({"A0", "A1"})
-          if r["A0"] and r["A1"] then
+          local r = rows({"A0", "A1"}, function (r)
+             local total = 0
+             local success = 0
+             for k, v in pairs(r) do
+                total = total + 1
+                if v ~= nil then
+                   success = success + 1
+                end
+                return total == success
+             end
+          end)
+          if r then
              ...
           end
        ```
