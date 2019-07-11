@@ -1,5 +1,44 @@
 # [STAGE for LUA](https://github.com/datumflux/stage/raw/master/stage.pdf)
 
+비동기 이벤트와 상호작용을 최소화 한 격리된 실행환경은 안전하고 확장성 있는 애플리케이션을 만들수 있도록 설계 되었습니다.
+
+다음의 예제는 다수의 연결을 동시에 처리하고 각 연결에 대한 콜백이 실행되고 실행할 처리가 없다면 대기합니다.
+
+```lua
+local server = broker.ready("tcp://[::]:8081", function (socket, addr)
+    print("accept client: " .. broker.ntoa(addr)) 
+    return true
+end)
+
+server.close = function (socket)   
+    print("close client: " .. broker.ntoa(socket[1]))
+end
+
+socket.receive = function (socket, data, addr)
+   socket.commit("Hello World\n")
+end
+ 
+```
+
+단순해 보이는 예제는 *넌-스레드 구조의 복잡한 상호작용 없이 스레드를 사용하고, 비효율적인 리소스 접근을 관리*하면서 실행이 됩니다. 
+
+모든 함수는 넌-블로킹 처리를 하지만, 블로킹 처리를 강제로 변환하는 처리는 수행하지 않습니다.
+
+블로킹이 필요한 코드는 지원 함수를 통해 다음과 같이
+```lua
+--- start logic
+thread.new(function (arg...)
+   -- process logic
+   return result...
+end, arg...).waitfor(function (result...)
+   -- finish logic
+end)
+```
+실행할 수 있으며 **실행이 완료될때까지 리소스를 분리**하여 실행 성능에 영향을 주지 않습니다.
+
+이제 여러분은 스레드 사용중에 발생될 수 있는 교착상태에 대해서 고민할 필요없이 넌-스레드 구조처럼 사용하면 됩니다.
+
+-----
 **STAGE:플랫폼** 은 서비스를 개발하기 위해 사용되는 백엔드 개발 솔루션입니다. 
 
 대부분의 백엔드 개발자가 배워야하는 기술들은 다양합니다. 언어와 상관없이 쓰레드에 관련된 사용법과 수 많은 서버를 연결하기 위한 네트워크 기술, 그리고 콘텐츠를 개발하는데 필요한 상태머신에 대한 이해와 데이터를 저장하기 위한 데이터베이스에 대한 이해는 필수가 되었습니다.
