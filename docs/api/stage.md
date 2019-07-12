@@ -401,7 +401,7 @@
         })
         ```
         의 형태로 처리가 추가 되었습니다.
-        
+
         |명령|축약|설명|
         |:--:|:--:|:---|
         |s|set|추가 또는 업데이트|
@@ -415,7 +415,7 @@
           1. 요청
           > 이미 존재하는 상태에서 데이터를 설정하면, 기존 데이터를 갱신합니다.
           ```lua
-          "set": {
+          "set?index/tier": {
             "ID": {       -- 고유값
               "v": VALUE  -- 보관이 필요한 데이터
               "i": score, -- 선택된 score에 설정
@@ -432,30 +432,30 @@
           
           2. 반환
           ```lua
-          "set": {
+          "set?index/tier": {
             "ID": DISTANCE -- 0인 경우 score의 변경 없음
           }
 
        * 데이터 삭제
          1. 요청
           ```lua
-          "del": [ ID, ...]
+          "del?index/tier": [ ID, ...]
           ```
 
          2. 반환<br>
           ```lua
-          "del": { ID: result_bool }
+          "del?index/tier": { ID: result_bool }
           ```
 
        * 데이터 조회
          1. 요청
           ```lua
-          "get": [ ID, ...]
+          "get?index/tier": [ ID, ...]
           ```
 
          2. 반환<br>
           ```lua
-          "get": {
+          "get?index/tier": {
             ID: {
               "v": VALUE,
               "I": {
@@ -472,10 +472,10 @@
        * 범위 조회
          1. 요청
           ```lua
-          "range": [ SCORE, COUNT]  -- SCORE부터 COUNT만큼 데이터를 얻는다.
-          "range": [ ID, DELTA, COUNT] -- ID의 SCORE를 기준으로 (X - DELTA)부터 COUNT만큼 데이터를 얻는다. 
+          "range?index/tier": [ SCORE, COUNT]  -- SCORE부터 COUNT만큼 데이터를 얻는다.
+          "range?index/tier": [ ID, DELTA, COUNT] -- ID의 SCORE를 기준으로 (X - DELTA)부터 COUNT만큼 데이터를 얻는다. 
 
-          "forEach": [ START, COUNT ] -- START순위부터 얻는다.
+          "forEach?index/tier": [ START, COUNT ] -- START순위부터 얻는다.
           ```
 
          2. 반환<br>
