@@ -345,16 +345,16 @@
           ["=curl+agent"],
           ["=ticket+ticket"],
           ["=route+route"],
-          ["=lua+stage"],
-          ["=lua+process"]
+          ["lua.so+stage"],
+          ["luajit.so+process"]
         ],
      ```
      처럼, stage 이후에 (**+** 문자) 지정된 문자열을 나타냅니다.<br>
      만약, 지정되지 않으면 다른 stage에서 메시지를 보낼 수 없습니다. (단, 요청에 대한 응답은 제외 입니다)
 
-     > *["=lua+stage"]* 와 *["=lua+process"]* 는 별도의 프로세서로 분리되어 실행됩니다.
+     > *["lua.so+stage"]* 와 *["luajit.so+process"]* 는 별도의 프로세서로 분리되어 실행됩니다.
 
-     > *["=lua+stage", "=index+rank"]* 라고 정의되면 하나의 프로세서에 두개의 stage가 실행됩니다.
+     > *["lua.so+stage", "=index+rank"]* 라고 정의되면 하나의 프로세서에 두개의 stage가 실행됩니다.
 
      * **index로 메시지 전달**
 

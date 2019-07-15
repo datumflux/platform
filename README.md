@@ -138,9 +138,9 @@ end)
 
        ```json
          "#startup":[
-           ["=lua+stage"],
-           ["=lua+stage"],
-           ["=lua+stage"]
+           ["lua.so+stage"],
+           ["lua.so+stage"],
+           ["lua.so+stage"]
          ]
        ```
        으로 구성된 설정에서
@@ -149,8 +149,8 @@ end)
          broker.ready("tcp://0.0.0.0:8081?...", function (socket, addr)
          ...
        ```
-       연결을 받도록 지정해 두었다면, 8081 포트로 연결되는 접속을 *["=lua+stage"]* 로 설정된 프로세서가 나누어 받을 수 있습니다.
-       > stage.signal("stage:message_id", ...) 로 메시지를 보내면 설정된 여러개(정의된 3개) "=lua+stage"는 전달 정책에 따라 하나의 "=lua+stage"에만 전달 됩니다. 모든 "=lua+stage"에 전달을 원하고자 한다면 "*stage:message_id" 로 메시지를 전달하면 됩니다.   
+       연결을 받도록 지정해 두었다면, 8081 포트로 연결되는 접속을 *["lua.so+stage"]* 로 설정된 프로세서가 나누어 받을 수 있습니다.
+       > stage.signal("stage:message_id", ...) 로 메시지를 보내면 설정된 여러개(정의된 3개) "lua.so+stage"는 전달 정책에 따라 하나의 "lua.so+stage"에만 전달 됩니다. 모든 "lua.so+stage"에 전달을 원하고자 한다면 "*stage:message_id" 로 메시지를 전달하면 됩니다.   
 
      * #router <br>
        메시지 교환에 필요한 값을 설정합니다<br>
@@ -184,7 +184,8 @@ end)
 
        기본으로 제공되는 stage는
 
-       * =lua
+       * lua.so
+       * luajit.so
        * =index
        * =curl
        * =route
@@ -196,7 +197,7 @@ end)
        1. 항목별로 독립된 프로세서로 구성됩니다.
           > 프로세서에 문제가 발생되어 종료되는 경우, 자동 재 시작됩니다.
        1. 프로세서에 정의되는 stage_id는 중복되지 않도록 주의 하셔야 합니다. (처리 하지 못하는 데이터가 전달될 수 있습니다)
-          > 예) ["=lua+stage", "=index+stage"]
+          > 예) ["lua.so+stage", "=index+stage"]
        
   ```sh
 #!/bin/sh
@@ -215,7 +216,7 @@ exec ./single -c - $* << EOF
         ["=route+route"],
         ["=ticket+ticket"],
         ["=curl+curl"],
-        ["=lua+stage"]
+        ["lua.so+stage"]
     ],
 
     "=curl+agent": {
@@ -224,7 +225,7 @@ exec ./single -c - $* << EOF
         "timeout": 10000
     },
 
-    "=lua": {
+    "lua.so": {
         "%preload": "preload",
         "%package": [ "package", "rollback", "[0]lib", "[0]" ],
         "%odbc":  {
@@ -236,7 +237,7 @@ exec ./single -c - $* << EOF
                 "PASSWORD": "..."
             }
         },
-        "=lua+stage": "start"
+        "lua.so+stage": "start"
     },
     "=ticket+ticket": [
         100000,

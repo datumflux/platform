@@ -77,7 +77,7 @@
    **두번째 방법** 인, *stage.submit()* 는 동일한 실행환경에서 쓰레드를 통해 구동이 된다면 다음에 설명되는 *stage.signal()* 기법은 실행 환경과 분리된  다른 실행 환경을 가능하게 합니다.
    
    ```lua
-     -- "=lua+process" 로 정이된 stage
+     -- "luajit.so+process" 로 정이된 stage
      stage.waitfor("invoke", function (v)
         -- 반환결과를 되돌려 줍니다.
         --
