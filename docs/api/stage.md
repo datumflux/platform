@@ -17,7 +17,7 @@
 >
 > stage는 플랫폼의 기본 기능에 접근할수 있도록 구성되어 있습니다.
 
->#### <a id="stage-once"></a> stage.once(s, function ())
+>### <a id="stage-once"></a> stage.once(s, function ())
 
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> s 가 실행된 적이 없는 경우에만 function()을 실행
   * **입력**
@@ -41,7 +41,7 @@
        stage.once("#1", nil) -- 실행 여부 제거
     ```
   
->#### <a id="stage-load"></a> stage.load(s \[, function (v, i)])
+>### <a id="stage-load"></a> stage.load(s \[, function (v, i)])
 
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> s 스크립트를 로딩
   * **입력**
@@ -116,7 +116,7 @@
 
     는 동일한 결과를 보여 줍니다.
 
->#### <a id="stage-addtask"></a> stage.addtask(i, function (v...)\[, v...])
+>### <a id="stage-addtask"></a> stage.addtask(i, function (v...)\[, v...])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *i* msec 이후에 function()을 실행합니다.
   * **입력**
     * i - 함수를 실행할 지연 시간 (msec)
@@ -150,7 +150,7 @@
   * 참고
     * **msec** - msec는 1/1000초를 의미하며 1000 msec 가 1초 입니다.
 
->#### <a id="stage-submit"></a> stage.submit(i, function (v...)\[, v...])
+>### <a id="stage-submit"></a> stage.submit(i, function (v...)\[, v...])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *i* 고유 값이 중복되지 않도록 function()을 실행합니다.
   * **입력**
     * i - 고유 값 (0 - 중복실행 허용)
@@ -183,7 +183,7 @@
        end, { 10, 20, 30 })
     ```
 
->#### <a id="stage-signal"></a> stage.signal(t, v...)
+>### <a id="stage-signal"></a> stage.signal(t, v...)
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지 v를 *t* 에게 전달합니다.
   * **입력**
     * t - 메시지를 받을 상대방 ID
@@ -391,7 +391,7 @@
         });
         ```
 
-        >#### r966 업데이트 이후 축약 명령이 추가 되었습니다.
+        >### r966 업데이트 이후 축약 명령이 추가 되었습니다.
         ```lua
         stage.signal("rank:callback=s?index", {
             ["KR0001"] = {
@@ -796,7 +796,7 @@
     * [stage.waitfor](#stage-waitfor)
 
 
->#### <a id="stage-waitfor"></a> stage.waitfor(\[s,] function (v..., data...) \[, v...])
+>### <a id="stage-waitfor"></a> stage.waitfor(\[s,] function (v..., data...) \[, v...])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지를 *s*를 처리 할수 있는 함수를 등록합니다.
   * **입력**
     * s - *(생략 가능: 생략시 자동 생성)* 메시지ID
@@ -946,11 +946,11 @@
 
     로그 레벨명을 기준으로 log4cxx.**level**(s) 함수가 정의되어 있으며, 해당 로그 레벨에 적합한 함수를 사용하는 방법과 로그 출력 전에 *%{=log4cxx:level}* 를 지정하여 변경하는 방법이 있습니다. 필요에 따라서 사용할 수 있습니다.
 
-    >##### log4cxx.out(s)
-    >##### log4cxx.info(s)
-    >##### log4cxx.warn(s)
-    >##### log4cxx.error(s)
-    >##### log4cxx.trace(s)
+    >#### log4cxx.out(s)
+    >#### log4cxx.info(s)
+    >#### log4cxx.warn(s)
+    >#### log4cxx.error(s)
+    >#### log4cxx.trace(s)
 
   * **예제**
     ```lua
@@ -1005,7 +1005,7 @@
     |tick|d|초단위 시간|
 
 
-    >#### <a id="thread-new"></a> thread.new(function (v..., data...) \[, v...])
+    >### <a id="thread-new"></a> thread.new(function (v..., data...) \[, v...])
     * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 쓰레드 함수를 등록합니다.
     * **입력**
       * function() - 실행 함수
@@ -1016,15 +1016,15 @@
 
       *thread.signal()* 함수를 통해 *thread_object.waitfor()* 로 메시지를 전달할 수 있습니다.
 
-    >#### <a id="thread-waitfor"></a> thread.signal(v)
+    >### <a id="thread-waitfor"></a> thread.signal(v)
     * **기능**  <span style="white-space: pre;">&#9;&#9;</span> thread.new()로 생성된 함수 내에서 *thread_object.waitfor()* 함수로 메시지를 전달 합니다.
     * **입력**
       * v - 전달할 메시지
       * v... - *(생략 가능)* function()에 전달할 값
     * **설명**<br>
-      *thread.new()*를 통해  생성된 함수에서 메시지를 전달할 때 사용됩니다.
+      *thread.new()* 를 통해  생성된 함수에서 메시지를 전달할 때 사용됩니다.
 
-    >#### <a id="thread-waitfor"></a> thread_object.waitfor(function (v..., data...) \[, v...])
+    >### <a id="thread-waitfor"></a> thread_object.waitfor(function (v..., data...) \[, v...])
     * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지를 *s*를 처리 할수 있는 함수를 등록합니다.
     * **입력**
       * function() - 실행 함수

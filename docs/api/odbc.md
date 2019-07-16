@@ -14,7 +14,7 @@
 
 >## <a id="odbc-ns"></a> odbc
 
->#### <a id="odbc-scope"></a> odbc.new(\[s | t] \[, function (adapter)])
+>### <a id="odbc-scope"></a> odbc.new(\[s | t] \[, function (adapter)])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> odbc를 통해 데이터베이스와 연결합니다. 
   * **입력** 
     * s - 문자열 형태의 연결 정보
@@ -106,7 +106,7 @@
         end);
     ```
 
->#### <a id="odbc-cache"></a> odbc.cache(s \[, function ()])
+>### <a id="odbc-cache"></a> odbc.cache(s \[, function ()])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  *s*로 캐싱된 데이터가 없는 경우 *function*을 호출합니다.
   * **입력** 
     * s - 고유 이름
@@ -143,7 +143,7 @@
         end);
     ```
 
->#### <a id="odbc-purge"></a> odbc.purge([s, t])
+>### <a id="odbc-purge"></a> odbc.purge([s, t])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  데이터를 제거합니다.
   * **입력** 
     * s - 고유 이름
@@ -165,7 +165,7 @@
 
 >### <a id="adapter-ns"></a> adapter
 
->#### <a id="adapter-execute"></a> adapter.execute(\[s | t] \[, v... ])
+>### <a id="adapter-execute"></a> adapter.execute(\[s | t] \[, v... ])
 
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 데이터베이스로 명령을 전달합니다.
   * **입력** 
@@ -234,7 +234,7 @@
         end);
     ```
 
->#### <a id="adapter-apply"></a> adapter.apply(row \[, s] \[, function (t1, t2)])
+>### <a id="adapter-apply"></a> adapter.apply(row \[, s] \[, function (t1, t2)])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  변경된 항목을 적용합니다.
   * **입력** 
     * row - resultset.fetch()를 통해 반환된 객체와 연결된 객체
@@ -283,7 +283,7 @@
         end
     ```
 
->#### <a id="adapter-begin"></a> adapter.begin( \[function (adapter)] )
+>### <a id="adapter-begin"></a> adapter.begin( \[function (adapter)] )
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  트랜젝션을 시작합니다.
   * **입력** 
     * function (adapter) - *(생략 가능)* 트랜젝션 처리 후 호출되는 콜백 함수
@@ -319,7 +319,7 @@
        adp.begin()
     ```
 
->#### <a id="adapter-commit"></a> adapter.commit()
+>### <a id="adapter-commit"></a> adapter.commit()
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  트랜젝션 중에 처리된 변경 내용을 적용합니다.
   * **입력** <span style="white-space: pre;">&#9;&#9;</span> 없음
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 없음
@@ -338,7 +338,7 @@
        adp.commit()
     ```
 
->#### <a id="adapter-rollback"></a> adapter.rollback()
+>### <a id="adapter-rollback"></a> adapter.rollback()
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  트랜젝션 중에 처리된 변경 내용을 취소합니다.
   * **입력** <span style="white-space: pre;">&#9;&#9;</span> 없음
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 없음
@@ -357,7 +357,7 @@
        adp.rollback()
     ```
 
->#### <a id="adapter-close"></a> adapter.close()
+>### <a id="adapter-close"></a> adapter.close()
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 데이터베이스 연결을 닫습니다.
   * **입력** <span style="white-space: pre;">&#9;&#9;</span> 없음
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 없음
@@ -380,7 +380,7 @@
 
 >### <a id="resultset-ns"></a> resultset
 
->#### <a id="resultset-fetch"></a> resultset.fetch( \[t | s] \[, function (row)])
+>### <a id="resultset-fetch"></a> resultset.fetch( \[t | s] \[, function (row)])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 실행된 명령에서 결과를 얻습니다.
   * **입력** 
     * t - 결과의 정렬을 원하는 컬럼 목록
@@ -427,7 +427,7 @@
        end       
     ```
 
->#### <a id="resultset-erase"></a> resultset.erase(row, [s | t])
+>### <a id="resultset-erase"></a> resultset.erase(row, [s | t])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 얻어진 결과에서 *t* 를 삭제합니다.
   * **입력** 
     * row - resultset.fetch()의 반환 객체에 연결된 객체
@@ -491,7 +491,7 @@
        end       
     ```
 
->#### <a id="resultset-near"></a> resultset.near(row, [s | t])
+>### <a id="resultset-near"></a> resultset.near(row, [s | t])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 얻어진 결과에서 *t* 위치의 데이터를 얻습니다.
   * **입력** 
     * row - resultset.fetch()의 반환 객체에 연결된 객체
@@ -576,7 +576,7 @@
     ```lua
     ```
 
->#### <a id="resultset-apply"></a> resultset.apply(row \[, table] \[, function (t1, t2)])
+>### <a id="resultset-apply"></a> resultset.apply(row \[, table] \[, function (t1, t2)])
 
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span>  변경된 항목을 적용합니다.
   * **입력** 

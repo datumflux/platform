@@ -18,7 +18,7 @@
  기본적인 통신 방식은 [BSON](http://bsonspec.org/)을 통해 데이터를 전달 받을수 있도록 구성되어 있습니다.
  > BSON는 JSON을 이진화하는 형태로 상호 변환이 가능한 직렬화 기법으로 데이터를 전달하는 효과적인 방법입니다.
 
->#### <a id="broker-ready"></a> broker.ready(s, function (socket))
+>### <a id="broker-ready"></a> broker.ready(s, function (socket))
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *s*로 정의된 네트워크 연결을 대기 상태로 설정합니다.
   * **입력**
     * s - 설정 정보
@@ -94,7 +94,7 @@
        end);
     ```
 
->#### <a id="broker-join"></a> broker.join(s, function (socket, s))
+>### <a id="broker-join"></a> broker.join(s, function (socket, s))
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *s*로 정의된 네트워크 연결을 진행 합니다.
   * **입력**
     * s - 설정 정보
@@ -170,7 +170,7 @@
        end);
     ```
 
->#### <a id="broker-close"></a> broker.close([i | { i, ... }])
+>### <a id="broker-close"></a> broker.close([i | { i, ... }])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 네트워크 연결을 페쇄합니다.
   * **입력**
     * i - 소켓 번호
@@ -190,7 +190,7 @@
        broker.close(socket.id);
     ```
 
->#### <a id="broker-f"></a> broker.f(i)
+>### <a id="broker-f"></a> broker.f(i)
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 소켓번호를 연결 정보로 전환합니다.
   * **입력**
     * i - 소켓 번호
@@ -219,7 +219,7 @@
        local socket = broker.f(socket_id);
     ```
 
->#### <a id="broker-signal"></a> broker.signal(\[i | s | { i, s... }], v)
+>### <a id="broker-signal"></a> broker.signal(\[i | s | { i, s... }], v)
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지를 전달합니다.
   * **입력**
     * i - 소켓 번호에 메시지가 발생된 것 처럼 전달합니다.
@@ -259,7 +259,7 @@
        })
     ```
 
->#### <a id="broker-submit"></a> broker.submit(i, function (i, v...)\[, v...])
+>### <a id="broker-submit"></a> broker.submit(i, function (i, v...)\[, v...])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *i* 소켓의 function()을 중복되지 않도록 실행합니다.
   * **입력**
     * i - 소켓
@@ -289,7 +289,7 @@
        end, { 10, 20, 30 })
     ```
 
->#### <a id="broker-ntoa"></a> broker.ntoa(s \[, t])
+>### <a id="broker-ntoa"></a> broker.ntoa(s \[, t])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 네트워크 주소를 문자열로 변환합니다.
   * **입력**
     * s - 연결 주소
@@ -323,7 +323,7 @@
        print("IP", broker.ntoa(addr));
     ```
 
->#### <a id="broker-aton"></a> broker.aton(\[s | i\] \[, t])
+>### <a id="broker-aton"></a> broker.aton(\[s | i\] \[, t])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 문자열을 네트워크 주소로 변환합니다.
   * **입력**
     * s - 연결 주소
@@ -349,7 +349,7 @@
        local addr = broker.aton("udp://224.0.0.1:8082", {})[1];
     ```
 
->#### <a id="broker-ifaddr"></a> broker.ifaddr(s)
+>### <a id="broker-ifaddr"></a> broker.ifaddr(s)
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 네트워크 장치의 주소를 얻습니다.
   * **입력**
     * s - 얻고자 하는 장치명
@@ -380,7 +380,7 @@
 
 >### <a id="socket-ns"></a> socket
 
->#### <a id="socket-commit"></a> socket.commit(v \[, s])
+>### <a id="socket-commit"></a> socket.commit(v \[, s])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 메시지 *v*를 *s*로 보냅니다.
   * **입력**
     * v - 보내고자 하는 메시지
@@ -406,7 +406,7 @@
        })
     ```
 
->#### <a id="socket-close"></a> socket.close()
+>### <a id="socket-close"></a> socket.close()
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 네트워크 연결을 페쇄합니다.
   * **입력** <span style="white-space: pre;">&#9;&#9;</span> 없음
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 없음
