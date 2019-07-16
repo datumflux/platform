@@ -163,9 +163,9 @@
   * **예제**
     ```lua
        ...
-       broker.join("tcp://192.168.1.10:8081?packet=10k,40k", function (socket)
+       broker.join("tcp://192.168.1.10:8081?packet=10k,40k", function (socket, addr)
           ...
-          print("NTOA: ", k, broker.ntoa(socket.addrs[2]));
+          print("NTOA: ", k, broker.ntoa(addr));
           socket.commit("GET / HTTP/1.0\r\n\r\n");
        end);
     ```
