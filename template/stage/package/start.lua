@@ -1,6 +1,6 @@
 
 -- SANDBOX 정책에 상관없이 자료형이 공유되도록 설정
-_ENV[""] = {
+_SANDBOX[""] = {
 	"*BLACKLIST", "*MAINTENANCE_TIME", "*CONCURRENT", "*USERS",
 	["*updateConcurrentReport"] = function (index, now)
 		if now == nil then

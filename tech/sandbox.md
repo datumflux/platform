@@ -75,7 +75,7 @@
 
   **사용하기 위해서는 두가지의 조건이 맞추어져야 합니다.**
 
-  1. _ENV[""] = { ... } 또는 stage.proxy()에 정의되어야 합니다.
+  1. _SANDBOX[""] = { ... } 또는 stage.proxy()에 정의되어야 합니다.
   2. stage.index = function (k, i, t) 함수를 정의해야 합니다.
 
      |이름|자료형|설명|
@@ -94,7 +94,7 @@
 
   **예제)**
   ```lua
-_ENV[""] = { "MAP",   }
+_SANDBOX[""] = { "MAP",   }
 
 stage.index = function (r, i, t)
     print("CALL", i, t, r)
@@ -214,10 +214,10 @@ MAP = 	100
    ``` 
    coroutine 함수의 실행전에 생성된 변수의 초기값은 읽을 수 있으나 이후에 변경되는 값은 접근할 수 없음을 확인할 수 있습니다.
    
-   필요에 따라, 전역변수의 공유가 필요한 상황이라면 **_ENV[""]** 정책을 추가하여, 다음과 같이 변경해 동일한 결과를 얻을 수 있습니다.
+   필요에 따라, 전역변수의 공유가 필요한 상황이라면 **_SANDBOX[""]** 정책을 추가하여, 다음과 같이 변경해 동일한 결과를 얻을 수 있습니다.
 
    ```lua
-    _ENV[""] = { "RESULT", "HELLO" }
+    _SANDBOX[""] = { "RESULT", "HELLO" }
 
     local co = coroutine.create(function ()
         RESULT = 0
@@ -309,10 +309,10 @@ MAP = 	100
 
    > TIP: 쓰레드별도 라이브러리 형태의 스크립트를 미리 로딩할 필요가 있다면 "preload/" 폴더에 저장하여 사용할 수 있습니다.
 
-   *coroutine*의 샌드박스 정책 설정과 마찬가지로 **_ENV[""]** 정책 설정을 통해 전역변수나 함수등을 공유할 수 있습니다.
+   *coroutine*의 샌드박스 정책 설정과 마찬가지로 **_SANDBOX[""]** 정책 설정을 통해 전역변수나 함수등을 공유할 수 있습니다.
 
    ```lua
-    _ENV[""] = { "*hello", "*HELLO" }
+    _SANDBOX[""] = { "*hello", "*HELLO" }
 
     function hello(msg)
         print("HELLO", msg)
@@ -341,7 +341,7 @@ MAP = 	100
 
    과 같이 원하는 결과를 얻을 수 있습니다.
 
-   쓰레드 사용에 있어 개발의 일관성을 최대한 유지하기 위해 *stage.submit()* 함수를 통해 실행한다는 것과 *_ENV[""]* 정책만 추가 되었습니다.
+   쓰레드 사용에 있어 개발의 일관성을 최대한 유지하기 위해 *stage.submit()* 함수를 통해 실행한다는 것과 *_SANDBOX[""]* 정책만 추가 되었습니다.
 
    또한, 동기적인 실행을 통해 처리가 블록되는 현상을 제거하기 위해 모든 처리결과는 비동기로 처리됩니다.
 
@@ -350,7 +350,7 @@ MAP = 	100
    만약, 변수에 대한 무결성의 확인이 필요하다면 *__.변수명 = function (V)* 형태로 접근하여 처리될수 있습니다.
 
    ```lua
-    _ENV[""] = { "*hello", "*HELLO" }
+    _SANDBOX[""] = { "*hello", "*HELLO" }
 
     function hello(msg)
         print("HELLO", msg)
@@ -382,7 +382,7 @@ MAP = 	100
   처리결과를 비동기로 받기 위한 방법을 쓰레드의 사용예제를 통해 확인해 보도록 하겠습니다.
 
    ```lua
-    _ENV[""] = { "*HELLO" }
+    _SANDBOX[""] = { "*HELLO" }
 
     function hello(msg)
         print("HELLO", msg)
@@ -419,7 +419,7 @@ MAP = 	100
    다음의 스크립트는 *stage.waitfor()* 를 쓰레드 내에서 정의하고, 메인 스크립트에 정의된 *RESULT* 함수에 접근 여부를 확인하기 위한 예제 입니다.
 
    ```lua
-    _ENV[""] = { "*HELLO" }
+    _SANDBOX[""] = { "*HELLO" }
 
     RESULT = "MAIN"
     HELLO = "HELLO"
@@ -455,7 +455,7 @@ MAP = 	100
    > #### 업데이트를 통해 쓰레드용 결과 반환 방법이 추가
 
    ```lua
-    _ENV[""] = { "*HELLO" }
+    _SANDBOX[""] = { "*HELLO" }
 
     RESULT = "MAIN"
     HELLO = "HELLO"
