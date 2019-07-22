@@ -896,24 +896,34 @@
 
   * **예제**
     ```lua
-        local T = stage.proxy({}, {
-            ["count"] = { 
-                10, 20, 30, function (o, m, k, v)
-                    print("COUNT", o, o[k], m, k, v);
-                    for i, t in ipairs(m) do
-                        print("", i, t);
-                    end
-                    print("END");
-                end
-            },
-            ["hello"] = function (o, m, k, v)
-                print("HELLO", o, o[k], m, k, v)
+    local T = { 
+        value = 10,
+        level = 1
+    }
+
+    local proxy = stage.proxy(T, {
+        ["value"] = { 10, 20, 30, function (proxy, edges, k, v)
+            print("CHANGE VALUE",  k, v)
+            for i, p in ipairs(edges) do
+                print("", i, p)
+                proxy.level = math.floor(p / 10)
             end
-        })(function (v)
-            print("==> INDEX", v.count);
-            v.count = 9;
-            v.hello = "hello";
-        end);
+        end },
+        ["level"] = { 1, 2, 3, function (proxy, edges, k, v)
+            print("CHANGE LEVEL", k, v)
+            for i, p in ipairs(edges) do
+                print("", i, p)
+            end
+        end }
+    })
+
+    proxy.value = 30    -- "CHANGE VALUE" value 30
+                        --    1    20
+                        -- "CHANGE LEVEL" level 2
+                        --    1    2
+                        --    2    30
+                        -- "CHANGE LEVEL" level 3
+                        --    1    3
     ```
 
 >## <a id="log4cxx-ns"></a> log4cxx.*level*(s)
