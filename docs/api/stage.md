@@ -581,10 +581,10 @@
           end)
 
           stage.signal("route:@", {
-            "subscribe_id_0": "callbac_id",
-            "subscribe_id_1": "callbac_id",
-            "subscribe_id_2": "callbac_id",
-            "subscribe_id...": "callbac_id",
+            ["subscribe_id_0"] = "callbac_id",
+            ["subscribe_id_1"] = "callbac_id",
+            ["subscribe_id_2"] = "callbac_id",
+            ["subscribe_id..."] = "callbac_id",
           })
         ```
 
@@ -595,7 +595,7 @@
 
         ```lua
           stage.signal("route:@", {
-            "subscribe_id": true | false | msec
+            ["subscribe_id"] = true | false | msec
           })
 
           stage.signal("route:@", msec)
@@ -605,7 +605,7 @@
 
         ```lua
           stage.signal("route:@", {
-            "subscribe_id": nil
+            ["subscribe_id"] = nil
           })
 
           stage.signal("route:@", nil)
