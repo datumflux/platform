@@ -1,11 +1,15 @@
 * [stage](#stage-ns)
   * [stage.once](#stage-once)
-  * [stage.load](#stage_load)
+  * [stage.load](#stage-load)
+  * [stage.require](#stage-require)
   * [stage.addtask](#stage-addtick)
+  * [stage.call](#stage-call)
   * [stage.submit](#stage-submit)
   * [stage.signal](#stage-signal)
   * [stage.waitfor](#stage-waitfor)
   * [stage.proxy](#stage-proxy)
+  * [stage.json](#stage-json)
+  * [stage.random](#stage-random)
 * [log4cxx](#log4cxx-ns)
 
 * 프로퍼티
@@ -56,10 +60,10 @@
 
     *function (v, i)* 는
 
-       |인자|자료형|정보|
-       |----|-----|---------------------|
-       |v|object|로딩된 스크립트 정보 |
-       |i|array|[위치,로딩파일,수정시간]
+       |인자|자료형|정보|비고|
+       |----|-----|---------------------|---|
+       |v|object|로딩된 스크립트 정보 |로딩에 실패하면 nil|
+       |i|array|[위치,로딩파일,수정시간]|로딩에 실패하면 [파일명, 아이디]|
 
     를 가지고 있습니다.
 
@@ -116,6 +120,76 @@
 
     는 동일한 결과를 보여 줍니다.
 
+>### <a id="stage-require"></a> stage.require(s \[, function (v, i)])
+
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> s 스크립트를 로딩
+  * **입력**
+    * s - 로딩할 스크립트 이름 (파일명+아이디)
+    * function (v, i) - 로딩이 완료되면 실행되는 함수
+  * **반환** 
+    * function (v, i)가 사용 여부
+      * Y - 로딩된 스크립트
+      * N - function (v, i)의 반환 값
+  * **설명**<br>
+    스크립트 파일을 읽어 실행 가능한 상태로 준비합니다. **stage.load()** 는 파일 변경이 있다면 다시 로딩을 하지만, **stage.require()** 는 재로딩 하지 않습니다. 해당 처리는 **require()** 함수와 동일한 처리를 수행합니다.
+
+    *function (v, i)* 는
+
+       |인자|자료형|정보|참고|
+       |----|-----|---------------------|----|
+       |v|object|로딩된 스크립트 정보 |로딩에 실패하면 nil|
+       |i|array|[위치,로딩파일,수정시간]|로딩에 실패하면 [파일명, 아이디]|
+
+    를 가지고 있습니다.
+
+    > **위치** 는 스크립트가 
+      ```lua
+      {
+        "%package": ["package", "rollback", "[0]lib", "[0]"]
+      }
+      ```
+    으로 사용 가능한 경로가 지정되어 있을때, 
+    *package*의 위치값은 0, *"rollback"*의 위치값은 1이 됩니다.       
+    이후에 있는 *"*lib"* 와 *""* 는 **[0]** 의 설정을 통해 위치값을 강제로 0으로 지정하였습니다.
+    
+    > **로딩파일**은 *"%package"*에 정의된 경로의 어디에서 파일을 가져왔는지 실제 경로를 나타냅니다.
+    > **수정시간**은 로딩된 스크립트 파일의 최종 수정시간인 *time* 값을 가지고 있습니다. *(초단위로 os.time()을 통해 변환 가능)*   
+
+    *로딩할 스크립트 이름*은 "파일명\[+아이디]"의 형태로 사용이 되며 해당 의미는 다음과 같습니다.
+
+    ```lua
+      # source.lua
+      print("HELLO STAGE")
+      return {
+          ["id"] = function (v)
+             print("LOADING", v)
+          end
+      }
+    ```
+
+    * "source"<span style="white-space: pre;">&#9;&#9;</span>return에 정의된 {...} 반환
+    * "source+id"<span style="white-space: pre;">&#9;</span>\["id"]에 정의된 function()을 반환
+
+  * **예제**
+    ```lua
+       stage.require("source+id", function (r, i)
+        if r ~= nil then
+          return r
+        end
+
+        r = require(i[1])
+        if r ~= nil and i[2] ~= nil then
+          if type(r) == "table" then
+            return r[ i[2] ]
+          end
+          return nil
+        end
+        return r
+      end)
+    ```
+
+    는 스크립트 로딩에 실패하면 **require()** 함수를 사용해 기본 경로에 있는 파일을 로딩합니다.
+
 >### <a id="stage-addtask"></a> stage.addtask(i, function (v...)\[, v...])
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> *i* msec 이후에 function()을 실행합니다.
   * **입력**
@@ -146,6 +220,29 @@
           return 1000; --- 1초 간격으로 재 실행
        end, { 10, 20, 30 })
     ```
+
+  * 참고
+    * **msec** - msec는 1/1000초를 의미하며 1000 msec 가 1초 입니다.
+
+>### <a id="stage-call"></a> stage.call(f, arg...)
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 함수를 샌드박스에 격리해 실행합니다.
+  * **입력**
+    * f - 실행할 함수 (문자열의 경우, 파일을 로딩)
+    * arg... - function()에 전달하고자 하는 값
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 함수의 반환 값
+  * **설명**<br>
+
+   함수를 샌드박스에 격리해 실행하기 위한 목적으로 사용하는 함수로, 필요에 따라 
+   가변인자를 처리해야 하는경우에도 사용 할 수 있습니다.
+
+   > Javascript의 apply()처럼 함수의 인자를 배열로 받아 전달합니다.
+
+  * **예제**
+    ```lua
+       stage.call("start+function", { 10, 20, 30, { "MSG" } }, "HELLO")
+    ```
+
+    는, function (a, b, c, table, str) 형태로 인자를 전달합니다.
 
   * 참고
     * **msec** - msec는 1/1000초를 의미하며 1000 msec 가 1초 입니다.
@@ -925,6 +1022,46 @@
                         -- "CHANGE LEVEL" level 3
                         --    1    3
     ```
+
+>### <a id="stage-json"></a> stage.json(p)
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> JSON을 파싱해 Lua의 테이블형태로 변환 합니다.
+  * **입력**
+    * p - JSON 문자열 또는 JSON 파일명
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 변환된 값
+  * **설명**<br>
+    JSON 형태의 문자열 또는 파일을 파싱하여 lua에서 접근 가능한 테이블로 변환합니다.
+
+  * **예제**
+    ```lua
+    local json = stage.json("stage.json")
+    ...
+    ```
+
+>### <a id="stage-random"></a> stage.random(t, [s, e] | [function (random)])
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span>WELL 512 알고리즘을 통해 랜덤값을  생성합니다.
+  * **입력**
+    * t - 랜덤 테이블
+    * s, e - 범위 값 (생략 가능)
+    * function (random) - 그룹 함수 
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 랜덤 값
+  * **설명**<br>
+    개발중에 랜덤을 사용해야 하는 경우가 많이 있습니다. STAGE.LUA는 스레드를 사용해서 운영할 수 있는 특징을 가지고 있으나 기본적으로 제공하는 함수는 스레드 사용에 안전하지 않습니다.
+
+    이를 위해, 별도의 랜덤함수가 제공되며 해당되는 함수는 기본적으로 제공되는 랜덤함수의 단점을 보완하고 균일한 범위의 랜덤값을 생성할 수 있습니다.
+
+    또한, 사용후 t 로 입력된 랜덤테이블은 최근 데이터로 업데이트 되며 이후 랜덤 함수 호출시 마다 사용해 시드값을 유지할 수 있습니다.
+    
+  * **예제**
+    ```lua
+    local R = {}
+    print("RANDOM", stage.random(R, 1, 1000))
+    print("RANDOM", stage.random(R, 1, 1000))
+    print("RANDOM", stage.random(R, 1, 1000))
+    ...
+    ```
+
+    의 형태를 통해, 랜덤시드값을 유지하면서 랜덤을 생성할 수 있습니다.
+
 
 >## <a id="log4cxx-ns"></a> log4cxx.*level*(s)
   * **기능**  <span style="white-space: pre;">&#9;&#9;</span> 로그를 출력합니다.
