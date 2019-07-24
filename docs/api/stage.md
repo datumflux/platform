@@ -1024,16 +1024,18 @@
     ```
 
 >### <a id="stage-json"></a> stage.json(p)
-  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> JSON을 파싱해 Lua의 테이블형태로 변환 합니다.
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> JSON과 LUA 테이블간의 데이터를 변환 합니다.
   * **입력**
-    * p - JSON 문자열 또는 JSON 파일명
+    * p - JSON 문자열 | JSON 파일명 | JSON으로 변환하고자 하는 테이블
   * **반환** <span style="white-space: pre;">&#9;&#9;</span> 변환된 값
   * **설명**<br>
-    JSON 형태의 문자열 또는 파일을 파싱하여 lua에서 접근 가능한 테이블로 변환합니다.
+    JSON 형태의 문자열 또는 파일을 파싱하여 lua에서 접근 가능한 테이블로 변환하거나, 
+    lua형태의 테이블을 json 형태의 문자열로 변환합니다.
 
   * **예제**
     ```lua
     local json = stage.json("stage.json")
+    local json_str = stage.json(json)
     ...
     ```
 
