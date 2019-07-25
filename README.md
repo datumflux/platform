@@ -254,18 +254,13 @@ local sp = broker.ready("tcp://0.0.0.0:8081?packet=4k,10k", function (socket, ad
     -- 데이터를 받으면 호출되는 함수를 등록한다.
     return function (socket, data, addr)
 
-        -- 처리를 쓰레드로 실행하도록 전환 한다.
-        stage.submit(socket.id, function (socket_id, data, addr))
-
-            local socket = broker.f(socket_id)
-            stage.load("packet+" .. data.message, function (f)
-                local v = f(socket, data)
-                if v ~= nil then
-                    socket.commit(v, addr);
-                end
-            end)
-
-        end, socket.id, data, addr);
+        stage.load("packet+" .. data.message, function (f)
+            local v = f(socket, data)
+            if v ~= nil then
+                socket.commit(v, addr);
+            end
+        end)
+        
     end
 end);
 
