@@ -9,6 +9,7 @@
   * [stage.waitfor](#stage-waitfor)
   * [stage.proxy](#stage-proxy)
   * [stage.json](#stage-json)
+  * [stage.bson](#stage-bson)
   * [stage.random](#stage-random)
 * [log4cxx](#log4cxx-ns)
 
@@ -1036,6 +1037,24 @@
     ```lua
     local json = stage.json("stage.json")
     local json_str = stage.json(json)
+    ...
+    ```
+
+>### <a id="stage-bson"></a> stage.bson(p)
+  * **기능**  <span style="white-space: pre;">&#9;&#9;</span> BSON과 LUA 테이블간의 데이터를 변환 합니다.
+  * **입력**
+    * p - BSON 데이터 | BSON으로 변환하고자 하는 테이블
+  * **반환** <span style="white-space: pre;">&#9;&#9;</span> 변환된 값
+  * **설명**<br>
+    BSON 데이터를 lua에서 접근 가능한 테이블로 변환하거나, 
+    lua형태의 테이블을 BSON 데이터로 변환합니다.
+
+    > BSON으로 변환된 데이터를 print()로 출력하는 경우 정상적으로 확인되지 않습니다.
+
+  * **예제**
+    ```lua
+    local bson = stage.bson({name = "HELLO"})
+    local bson_str = stage.bson(bson).name
     ...
     ```
 
