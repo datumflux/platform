@@ -75,7 +75,8 @@ end)
 * [시작](#intro)
 * API
   * [stage](docs/api/stage.md#stage-ns)
-  * [log4cxx](docs/api/stage.md#log4cxx-ns)
+  * [bundle](docs/api/stage.md#bundle-ns)
+  * [logger](docs/api/stage.md#logger-ns)
   * [broker](docs/api/broker.md#broker-ns)
   * [odbc](docs/api/odbc.md#odbc-ns)
 

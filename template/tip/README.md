@@ -2,14 +2,14 @@
 
 > ### 1. 변수의 값이 변경될때 감지할 수 있는 방법
 
-  **stage.proxy()** 함수를 사용해 변수의 변경을 추적할 수 있습니다.
+  **bundle.proxy()** 함수를 사용해 변수의 변경을 추적할 수 있습니다.
   
   * 숫자형은 설정된 값의 범위를 넘어가면 호출됩니다.
   * 문자열 또는 boolean은 일치하면 호출 됩니다.
   
   ```lua
   local DATA = {}
-  local data = stage.proxy(DATA, {
+  local data = bundle.proxy(DATA, {
       ["count"] = {
           20,
           30,

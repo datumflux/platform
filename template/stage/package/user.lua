@@ -1,6 +1,6 @@
 local function EXP_update(socket, data)
     if data.exp ~= nil then
-        local user = stage.proxy(socket._user, {
+        local user = bundle.proxy(socket._user, {
             exp = { 100, 200, 300, 400, 500, 600, function (_this, edge, k, v)
                 local count = 0
                 for _i in ipairs(edge) do
@@ -28,7 +28,7 @@ local function CHALLENGE_update(socket, data)
 
     for k, v in pairs(data) do
         if socket._challenge[k] ~= nil then
-            local CHALLENGE = stage.proxy(socket._challenge[k], {
+            local CHALLENGE = bundle.proxy(socket._challenge[k], {
                 value = { socket._challenge[k].finish, function (_this, edge, k, v)
                     if _this.finish_time == 0 and _this.expire_time > now then -- 이미 완료한 챌린지가 아닌 경우에 처리
 
