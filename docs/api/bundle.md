@@ -139,7 +139,7 @@
     buffer[2] = { "HELLO", 100 }
 
     -- buffer[2]에 바이트단위 접근을 위한 연결을 설정  
-    bundle.viewof({buffer, buffer.row_size}, buffer.row_size, 1, function (row)
+    bundle.viewof({buffer, buffer.size}, buffer.size, 1, function (row)
        row[1] = 20 -- 'H' -> ' '
     end) -- 개별 접근
     ```
@@ -156,8 +156,8 @@
 
     > 이며, 읽을 수 있는 값은
 
-    * buffer.row_size - 구조체에 정의된 크기
-    * buffer.rows - 연결된 항목 수
+    * buffer.size - 구조체에 정의된 크기
+    * buffer.count - 연결된 항목 수
 
     가 있습니다.
 
