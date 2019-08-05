@@ -134,7 +134,7 @@
     의 구조체를, 다음과 같이 연결해 사용할 수 있습니다.
 
     ```lua
-    local buffer = bundle.viewof({"example.mmap", { "c10", "i" }}, 10)
+    local buffer = bundle.viewof({"example.mmap", { "c10 i" }}, 10)
 
     buffer[2] = { "HELLO", 100 }
 
