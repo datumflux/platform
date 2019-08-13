@@ -16,8 +16,7 @@ end
 
 socket.receive = function (socket, data, addr)
    socket.commit("Hello World\n")
-end
- 
+end 
 ```
 
 단순해 보이는 예제는 *넌-스레드 구조의 복잡한 상호작용 없이 스레드를 사용하고, 비효율적인 리소스 접근을 관리*하면서 실행이 됩니다. 
@@ -37,6 +36,42 @@ end)
 실행할 수 있으며 **실행이 완료될때까지 리소스를 분리**하여 실행 성능에 영향을 주지 않습니다.
 
 이제 여러분은 스레드 사용중에 발생될 수 있는 교착상태에 대해서 고민할 필요없이 넌-스레드 구조처럼 사용하면 됩니다.
+
+**추가** 다음 예제는 다수의 STAGE에 *request* 를 요청하고, 완료 시간인 100 msec가 지나는 경우 오류로 처리를 합니다. 
+
+```lua
+local id = stage.waitfor(function (self, ...) -- register waitfor
+   local args = {...}
+   if _WAITFOR ~= nil then
+      -- process logic
+      stage.waitfor(_WAITFOR[-1], nil) -- unregister
+   elseif args[1] == "CANCEL" then
+      -- cancel logic
+   end
+end, { ... })
+
+stage.addtask(100, function (id)
+   local f, args = stage.waitfor(id)
+   if f ~= nil then
+      stage.call(f, args, "CANCEL")
+      stage.waitfor(id, nil) -- unregister waitfor
+   end
+end, id)
+
+stage.signal("request=" ... id, values)
+```
+
+단순해 보이는 예제는 *메시지를 처리할 수 있는 STAGE를 찾아서 실행하고 결과를 반환* 하는 과정으로, **STAGE:플랫폼** 이 메시지를 처리하는 방식을 보여줍니다. 
+
+```lua
+stage.waitfor("request", function (self, ...) -- register waitfor
+   local args = {...}
+   -- process logic
+   return r1, r2, ... 
+end, { ... })
+```
+
+더 이상의 처리는 필요하지 않습니다.
 
 -----
 **STAGE:플랫폼** 은 서비스를 개발하기 위해 사용되는 백엔드 개발 솔루션입니다. 
