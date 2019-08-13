@@ -197,8 +197,8 @@ end)
 
        * lua.so
        * luajit.so
-       * =index
-       * =curl
+       * index.so
+       * curl.so
        * =route
        * =ticket
 
@@ -208,7 +208,7 @@ end)
        1. 항목별로 독립된 프로세서로 구성됩니다.
           > 프로세서에 문제가 발생되어 종료되는 경우, 자동 재 시작됩니다.
        1. 프로세서에 정의되는 stage_id는 중복되지 않도록 주의 하셔야 합니다. (처리 하지 못하는 데이터가 전달될 수 있습니다)
-          > 예) ["lua.so+stage", "=index+stage"]
+          > 예) ["lua.so+stage", "index.so+stage"]
        
   ```sh
 #!/bin/sh
@@ -223,14 +223,14 @@ exec ./single -c - $* << EOF
     "#cluster": [ ":eth0", 18081, "127.0.0.1:28081"],
     "#threads": [ 10, 10000 ],
     "#startup":[ 
-        ["=index+index"],
+        ["index.so+index"],
         ["=route+route"],
         ["=ticket+ticket"],
-        ["=curl+curl"],
+        ["curl.so+curl"],
         ["lua.so+stage"]
     ],
 
-    "=curl+agent": {
+    "curl.so+agent": {
         "user-agent": "STAGE Agent/1.0",
         "verbose": 0,
         "timeout": 10000
@@ -256,7 +256,7 @@ exec ./single -c - $* << EOF
             "odbc": 10
         }
     ],
-    "=index+rank": "score/"
+    "index.so+rank": "score/"
 }
 EOF
   ```

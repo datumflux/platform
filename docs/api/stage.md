@@ -434,8 +434,8 @@
      *stage_id* 의 설정은
      ```json
         "#startup":[ 
-          ["=index+rank"],
-          ["=curl+agent"],
+          ["index.so+rank"],
+          ["curl.so+agent"],
           ["=ticket+ticket"],
           ["=route+route"],
           ["lua.so+stage"],
@@ -447,7 +447,7 @@
 
      > *["lua.so+stage"]* 와 *["luajit.so+process"]* 는 별도의 프로세서로 분리되어 실행됩니다.
 
-     > *["lua.so+stage", "=index+rank"]* 라고 정의되면 하나의 프로세서에 두개의 stage가 실행됩니다.
+     > *["lua.so+stage", "index.so+rank"]* 라고 정의되면 하나의 프로세서에 두개의 stage가 실행됩니다.
 
      * **index로 메시지 전달**
 
@@ -912,6 +912,7 @@
 
        |순서|자료형|설명|
        |:---:|:---:|:---|
+       |-1|string|호출된 waitfor_id|
        |0|string|메시지ID|
        |1|object|메시지를 발생시킨 서버 정보|
        |2|string|메시지를 반환 받을 stage|
