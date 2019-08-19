@@ -99,12 +99,12 @@ end, { ... })
 ![슬라이드11](https://user-images.githubusercontent.com/40652766/61896627-5502c480-af50-11e9-9a10-25cf810e099e.png)
 
 
-*제품에 대한 자세한 정보는 [홈페이지](https://datumflux.co.kr) 에서 확인 하실수 있습니다.*
+*제품에 대한 자세한 정보는 [홈페이지](http://datumflux.co.kr) 에서 확인 하실수 있습니다.*
 
 >## 제품 설치
   * [Docker HUB](https://hub.docker.com/r/datumflux/stage) 에서 받으실 수 있습니다.
   
-  > 설정된 라이센스는 개발 라이센스로, 상용화에 사용하기를 원하시면 [홈페이지](https://datumflux.co.kr)를 통해 별도의 문의 부탁드립니다.   
+  > 설정된 라이센스는 개발 라이센스로, 상용화에 사용하기를 원하시면 [홈페이지](http://datumflux.co.kr)를 통해 별도의 문의 부탁드립니다.   
   
 >## 순서
 
