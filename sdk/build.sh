@@ -48,4 +48,4 @@ if [ ${#SOURCES} == 0 ]; then
 fi
 
 echo "Built target $MODULE"
-exec g++ -std=c++11 -shared -fPIC -Wall -O2 -Iinclude -o "${MODULE}.so" ${SOURCES}
+exec g++ -std=c++11 -shared -fPIC -Wall -O2 -Iinclude ${CXXFLAGS} -o "${MODULE}.so" ${SOURCES}

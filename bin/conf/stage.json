@@ -1,0 +1,55 @@
+{
+	"#license": [ "DOCKER", "69d95f0dda09dee11ebe3e5a5c6135e08263445a" ],
+	"#services": {
+		"tcp":["0.0.0.0:8801"]
+	},
+	"#router": [ 1500, 900 ],
+	"#cluster": [ 9801 ],
+	"#threads": [ 10, 10000 ],
+	"#startup":[ 
+		["=route+route"],
+		["=ticket+ticket"],
+		["index.so+index"],
+		["curl.so+curl"],
+		["luajit.so+stage"]
+	],
+
+	"curl.so+curl": {
+		"user-agent": "STAGE:Platform WebAgent/1.0",
+		"verbose": 0,
+		"timeout": 10000
+	},
+
+	"lua.so+process": {
+		"%preload": "preload",
+		"%package": [ "package", "rollback", "[0]lib", "[0]" ],
+		"%odbc":  {
+		},
+		"%cluster": "tcp://[::]:8081?bson=64k,128k",
+		"lua.so+process": "start"
+	},
+
+	"lua.so": {
+		"%preload": "preload",
+		"%package": [ "package", "rollback", "[0]lib", "[0]" ],
+		"%odbc":  {
+		},
+		"%cluster": [ "tcp://127.0.0.1:8081?bson=64k,128k" ],
+		"lua.so+stage": "start"
+	},
+	"luajit.so": {
+		"%preload": "preload",
+		"%package": [ "package", "rollback", "[0]lib", "[0]" ],
+		"%odbc":  {
+		},
+		"%cluster": "tcp://[::]:8081?bson=64k,128k",
+		"luajit.so+stage": "start"
+	},
+	"=ticket+ticket": [
+		100000,
+		{
+			"odbc": 10
+		}
+	],
+	"index.so+index": ["index/", 128, 100000]
+}

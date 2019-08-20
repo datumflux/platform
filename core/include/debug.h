@@ -19,40 +19,54 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
  */
-#ifndef __UTIME_H
-#  define __UTIME_H
+#ifndef __DEBUG_H
+#  define __DEBUG_H
 /*!
  * COPYRIGHT 2018-2019 DATUMFLUX CORP.
  *
- * \brief msec기반의 시간을 처리하기 위한 time_t 대응 함수
+ * \brief 디버깅을 위한 함수
  * \author KANG SHIN-SUK <kang.shinsuk@datumflux.co.kr>
  */
-#include "typedef.h"
-#include <sys/time.h>
+#include <stdarg.h>
+#include <assert.h>
 
-/*! \addtogroup core_utime
+/*! \addtogroup core_debug
  *  @{
  */
-typedef uint64_t utime_t;
+#ifndef EXTRN
+#  ifdef __cplusplus
+#    define EXTRN					extern "C"
+#  else
+#    define EXTRN					extern
+#  endif
+#endif	/* EXTRN */
 
+EXTRN const char *__progname;
 
-/* utime: timeNow를 1/1000 sec 로 변환 */
-EXTRN utime_t utime( struct timeval timeNow);
+#  ifdef NDEBUG
+#    define assertf(expr, args...)		(__ASSERT_VOID_CAST(0))
+#    define assertl(args...)			(__ASSERT_VOID_CAST(0))
+#    define dumpBuffer( buf, size)		(0)
+#  else
+EXTRN const char *__lprintf( const char *format, ...);
 
-/* utimeNow: 현재 시간에 대한 1/1000 sec를 반환한다. */
-EXTRN utime_t utimeNow( struct timeval *);
+#    if __GNUC_PREREQ( 3, 0)
+#       define assertf( expr, args...)	\
+			(__ASSERT_VOID_CAST( __builtin_expect( !!(expr), 1) ? 0:	\
+				(__assert_fail( __lprintf( args), __FILE__, __LINE__, 	\
+						__ASSERT_FUNCTION), 0)))
+#    else
+#       define assertf( expr, args...)	\
+			(__ASSERT_VOID_CAST( ((expr) ? 0:			\
+				(__assert_fail( __lprintf( args), __FILE__, __LINE__, 	\
+						__ASSERT_FUNCTION), 0)))
+#    endif
 
-/* utimeDiff: timeEnd시간과 timeStart시간의 차이를 반환 (1/1000 sec) */
-EXTRN utime_t utimeDiff( struct timeval timeStart, struct timeval timeEnd);
+#    define assertl( args...)	\
+	    __assert_fail( __lprintf( args), __FILE__, __LINE__, __ASSERT_FUNCTION)
+EXTRN void  dumpBuffer( const char *, int);
+#endif
 
-/* utimeTick: 현재 시간과 timeStart를 비교하여 차이를 반환 (1/1000 sec) */
-EXTRN utime_t utimeTick( struct timeval timeStart);
-
-/* utimeSleep: timeSleep 만큼 대기 한다. (1/1000 sec) */
-EXTRN int      utimeSleep( int timeSleep);
-
-/* utimeSpec: timeNow + msec = ts */
-EXTRN struct timespec *utimeSpec(struct timeval *timeNow, int msec, struct timespec *ts);
-
+EXTRN void debugTrace( int ndepth);
 /* @} */
 #endif

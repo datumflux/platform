@@ -1,138 +1,19 @@
-# [STAGE for LUA](https://github.com/datumflux/stage/raw/master/stage.pdf)
+# STAGE:플랫폼
+> 마이크로서비스로 개발되는 애드온 프로그램을 통합하여 관리하는 플랫폼입니다.
 
-비동기 이벤트와 상호작용을 최소화 한 격리된 실행환경은 안전하고 확장성 있는 애플리케이션을 만들수 있도록 설계 되었습니다.
-
-다음의 예제는 다수의 연결을 동시에 처리하고 각 연결에 대한 콜백이 실행되고 실행할 처리가 없다면 대기합니다.
-
-```lua
-local server = broker.ready("tcp://[::]:8081", function (socket, addr)
-    print("accept client: " .. broker.ntoa(addr)) 
-    return true
-end)
-
-server.close = function (socket)   
-    print("close client: " .. broker.ntoa(socket[1]))
-end
-
-socket.receive = function (socket, data, addr)
-   socket.commit("Hello World\n")
-end 
-```
-
-단순해 보이는 예제는 *넌-스레드 구조의 복잡한 상호작용 없이 스레드를 사용하고, 비효율적인 리소스 접근을 관리*하면서 실행이 됩니다. 
-
-모든 함수는 넌-블로킹 처리를 하지만, 블로킹 처리를 강제로 변환하는 처리는 수행하지 않습니다.
-
-블로킹이 필요한 코드는 지원 함수를 통해 다음과 같이
-```lua
---- start logic
-thread.new(function (arg...)
-   -- process logic
-   return result...
-end, arg...).waitfor(function (result...)
-   -- finish logic
-end)
-```
-실행할 수 있으며 **실행이 완료될때까지 리소스를 분리**하여 실행 성능에 영향을 주지 않습니다.
-
-이제 여러분은 스레드 사용중에 발생될 수 있는 교착상태에 대해서 고민할 필요없이 넌-스레드 구조처럼 사용하면 됩니다.
-
------
-**추가** 다음 예제는 다수의 STAGE에 *request* 를 요청하고, 완료 시간인 100 msec가 지나는 경우 오류로 처리를 합니다. 
-
-```lua
-local id = stage.waitfor(function (self, ...) -- register waitfor
-   local args = {...}
-   if _WAITFOR ~= nil then
-      -- process logic
-      stage.waitfor(_WAITFOR[-1], nil) -- unregister
-   elseif args[1] == "CANCEL" then
-      -- cancel logic
-   end
-end, { ... })
-
-stage.addtask(100, function (id)
-   local f, args = stage.waitfor(id)
-   if f ~= nil then
-      stage.call(f, args, "CANCEL")
-      stage.waitfor(id, nil) -- unregister waitfor
-   end
-end, id)
-
-stage.signal("request=" ... id, values)
-```
-
-단순해 보이는 예제는 *메시지를 처리할 수 있는 STAGE를 찾아서 실행하고 결과를 반환* 하는 과정으로, **STAGE:플랫폼** 의 메시지를 처리 방식입니다. 
-
-```lua
-stage.waitfor("request", function (self, ...) -- register waitfor
-   local args = {...}
-   -- process logic
-   return r1, r2, ... 
-end, { ... })
-```
-
-복잡한 메시지 처리는 필요하지 않습니다.
-
------
-**STAGE:플랫폼** 은 서비스를 개발하기 위해 사용되는 백엔드 개발 솔루션입니다. 
-
-대부분의 백엔드 개발자가 배워야하는 기술들은 다양합니다. 언어와 상관없이 쓰레드에 관련된 사용법과 수 많은 서버를 연결하기 위한 네트워크 기술, 그리고 콘텐츠를 개발하는데 필요한 상태머신에 대한 이해와 데이터를 저장하기 위한 데이터베이스에 대한 이해는 필수가 되었습니다.
-
-> **STAGE:플랫폼** 을 통해 백엔드를 개발하는데 익혀야 하는 수많은 지식 중에 일부, 콘텐츠를 개발하는데 필요한 지식과 표현하는 방법만을 통해 개발을 할수 있도록 지원하는 도구입니다. 
-
-**STAGE:플랫폼** 은 콘텐츠가 움직이는 공간입니다.
-
----
-개발의 결과물을 관리하기 위해 회사는 많은 노력을 합니다. PM을 통해 개발 지연에 대해 미리 방지하기도 하고, 정형화된 결과물을 얻기위해 형상화 툴을 사용하기도 합니다. 
-
-그러나 이러한 여건이 어려운 개발사는 진행되는 과정에서 숙명처럼 받아들이거나 개발범위를 축소하는 대책등으로 대처하고 있습니다.
-
-![슬라이드3](https://user-images.githubusercontent.com/40652766/61896038-086ab980-af4f-11e9-85fa-11b8b29bf1ca.png)
-
-**STAGE:플랫폼** 이 해결하고자 하는 것은 관리가 어려운 환경에서도 지연될수 밖에 없는 개발 구조를 콘텐츠에 집중하는 구조로 바꾸어 서버 개발자와 콘텐츠 개발자의 역할에 집중하고 안정적인 결과물을 만들어 내고자 합니다.
-
-![슬라이드6](https://user-images.githubusercontent.com/40652766/61896280-9646a480-af4f-11e9-85b3-ae0b8de0f71f.png)
-
-이를 통해, 콘텐츠에 집중하고 개선하도록 협업하는 방법이 정착되기를 바랍니다.
-
-![슬라이드11](https://user-images.githubusercontent.com/40652766/61896627-5502c480-af50-11e9-9a10-25cf810e099e.png)
-
-
-*제품에 대한 자세한 정보는 [홈페이지](http://datumflux.co.kr) 에서 확인 하실수 있습니다.*
-
->## 제품 설치
-  * [Docker HUB](https://hub.docker.com/r/datumflux/stage) 에서 받으실 수 있습니다.
+마이크로서비스(이하 *stage 서비스*) 는
+  - C/C++ SDK를 이용한 개발
+  - 스크립트를 이용한 개발
   
-  > 설정된 라이센스는 개발 라이센스로, 상용화에 사용하기를 원하시면 [홈페이지](http://datumflux.co.kr)를 통해 별도의 문의 부탁드립니다.   
-  
->## 순서
+을 통해 확장할 수 있습니다.
 
-* [시작](#intro)
-* API
-  * [stage](docs/api/stage.md#stage-ns)
-  * [bundle](docs/api/bundle.md#bundle-ns)
-  * [logger](docs/api/logger.md#logger-ns)
-  * [broker](docs/api/broker.md#broker-ns)
-  * [odbc](docs/api/odbc.md#odbc-ns)
-
-* [LUA 메뉴얼](http://www.lua.org/manual/5.3/)
-  * [15분 만에 루아배우기](http://tylerneylon.com/a/learn-lua/)
-
-* 개발
-  * [시작하기](template/)
-  * [연결하기](connector/)
-  * [Native SDK](sdk/)
-
-* [기술](tech/)
-  
 >## 시작
  
   스크립트를 사용해 콘텐츠를 구현하는데 유용한 API를 설명하기 위한 문서로, 백엔드 플랫폼의 구현에 필요한 지식을 간결하게 설명하고 콘텐츠를 직접 제작하는데 사용할수 있도록 기술하였습니다.
   
   stage 플랫폼은 lua 스크립트를 사용하여 콘텐츠를 구현하도록 하고 있습니다. lua는 문법이 간결하여 프로그래밍 지식에 따른 결과에 차이가 크게 않고 성능과 안정성을 유지하는데 효과적인 특성을 가지고 있습니다. 
  
-  stage에 대한 접근 방법을 이해 하기 위해서는 다음의 특징을 먼저 확인할 필요가 있습니다.
+  stage에 대한 접근 방법을 이해 하기 위해서는 다음의 특징을 먼저 알아야 힐 필요가 있습니다.
 
   > 특징
   1. **분산 실행** - 스크립트는 다른 프로세서 또는 다른 장비에서 실행될수 있습니다.
@@ -163,184 +44,66 @@ end, { ... })
   * **프로세서** - 실행되는 프로그램
   * **샌드 박스** - 외부와 분리되어 보호되는 실행 공간으로 안정성 유지를 위해 설정
   * **동기 실행** - 명령의 실행이 완료될때 까지 기다리는 형태의 실행방식
+
+>## 변화
+
+**STAGE:플랫폼** 은 2019년 8월 20일, 오픈소스로 공개가 되며 이를 통해 다양한 서비스가 개발되고 공유되어, 서버 개발에 어려움을 겪고 있는 개발자와 서버 개발을 원하는 다양한 개발자들에게 도움이 되기를 바랍니다.
+
+> STAGE:플랫폼의 라이센스는 LICENSE 파일을 통해 확인을 할수 있습니다.
+
+* #### STAGE:플랫폼은 다음의 서비스로 구성됩니다.  
+   > stage 서비스는 BSON을 사용해 통신을 합니다.
+    
+   - ticket
+   - route
+   - curl
+   - index
+   - **lua** - lua 5.3.5
+   - **luajit** - luajit 2.0
+
+   > stage.lua(jit) 에 대한 사용 방법과 자세한 설명은 [API 문서](docs/README.md)에서 확인 하실 수 있습니다.    
+     
+* #### 개발환경
+
+  - Ubuntu 18.04 LTS
+  - 라이브러리
+    - log4cxx
+    - jsoncpp
+    - crypto++
+    - curl
+    - z
+    - zip
+    - unixodbc
+    - jemalloc
+    
+  - 빌드 도구
+    - gcc/g++
+    - CMake
   
+* #### 빌드
 
-  ### **시작하기**
+  1. lua/5.3 빌드
+     ```console
+     $ ./build_lua.sh
+     $ ./build_luv.sh
+     $ ./build_openssl.sh     
+     ``` 
+     
+  1. lua/jit 빌드
+     ```console
+     $ ./build_luajit.sh
+     $ ./build_luv.sh
+     $ ./build_openssl.sh     
+     ``` 
 
-  1. stage의 환경 설정
-
-     |이름|자료형|역할|
-     |:---:|:---:|:--- |
-     |#services|object|프로세서간 공유가 필요한 네트워크 주소|
-     |#license|object|라이센스 설정 정보|
-     |#router|array|라우팅 정보 설정|
-     |#cluster|array|서버간 클러스터링 연결 정보|
-     |#threads|array|쓰레드 설정 정보|
-     |#startup|array|사용하고자 하는 stage plugin|
-
-     * #services <br>
-       리눅스 환경에서 구동되는 플랫폼은 외부 접속을 허용하는 네트워크 포트에 대해 여러 프로세서가 연결을 나누어 받을 수 있는 방법을 제공합니다. #PREFORK
-
-       예를 들어, 다음과 같은 설정을 통해
-
-       ```json
-         "#startup":[
-           ["lua.so+stage"],
-           ["lua.so+stage"],
-           ["lua.so+stage"]
-         ]
-       ```
-       으로 구성된 설정에서
-
-       ```lua
-         broker.ready("tcp://0.0.0.0:8081?...", function (socket, addr)
-         ...
-       ```
-       연결을 받도록 지정해 두었다면, 8081 포트로 연결되는 접속을 *["lua.so+stage"]* 로 설정된 프로세서가 나누어 받을 수 있습니다.
-       > stage.signal("stage:message_id", ...) 로 메시지를 보내면 설정된 여러개(정의된 3개) "lua.so+stage"는 전달 정책에 따라 하나의 "lua.so+stage"에만 전달 됩니다. 모든 "lua.so+stage"에 전달을 원하고자 한다면 "*stage:message_id" 로 메시지를 전달하면 됩니다.   
-
-     * #router <br>
-       메시지 교환에 필요한 값을 설정합니다<br>
-       1. 첫번째 항목은 메시지 수신 가능상태에 대한 동기화 시간을 설정합니다.
-          > *설정시간* 은 msec로 설정이 됩니다.<br>
-
-          > 서버에 연결된 stage가 *설정시간* 동안 동기화 되지 않으면 stage처리 권한이 제거됩니다. -- 제거되는 경우, "#cluster"에서 *"=서버주소:포트번호"* 로 연결된 다른 서버로 전달됩니다. 
-
-     * #cluster <br>
-       클러스터 설정은 3가지 설정을 가질수 있습니다.<br>
-       1. 다른 서버에서 정보를 받을수 있도록 설정 <br>
-          - 다른 위치에 존재하는 서버가 보낸 정보를 받을 수 있습니다.
-          > *포트번호* 를 지정합니다.<br>
-          > 다음 설정에 존재하는 *"포트번호"* 는 해당 값을 의미합니다.
-
-       1. 연결할 상대방 서버 주소를 지정합니다 <br>
-          - 다른 서버로 정보를 보낼 수 있습니다.
-          > *"서버주소:포트번호"* 를 지정합니다.
-
-       1. 외부 서버와 공유되는 이더넷 IP
-          - 외부 서버에로 보내는 데이터를 수신하기 위한 IP를 지정하거나, 해당 IP를 가지고 있는 이더넷 장치의 이름을 지정합니다.
-          > *":장치명"* 또는 *":IPv4"* 를 지정합니다.
-
-       1. 백업 클러스터 연결을 구성합니다.<br>
-          - 현재 서버에 stage_id가 존재하지 않거나 문제가 있다면 연결된 서버에 처리 요청을 전송합니다.
-          > *"=서버주소:포트번호"* 를 지정합니다. <br>
-          > 해당 설정된 서버는 stage_id가 존재하지 않는 경우에만 전달 됩니다.
-
-     * #startup <br>
-       활성화 시킬 stage를 지정합니다.
-
-       기본으로 제공되는 stage는
-
-       * lua.so
-       * luajit.so
-       * index.so
-       * curl.so
-       * =route
-       * =ticket
-
-       입니다. *SDK API를 사용해 커스터마이징된 stage 추가 가능*<p>
-       외부 요청에 대한 처리를 하기위해서는 stage_id를 지정해야 하는데, id는 stage명 뒤에 추가되는 *"+이름"* 형태로 지정을 합니다. 
-
-       1. 항목별로 독립된 프로세서로 구성됩니다.
-          > 프로세서에 문제가 발생되어 종료되는 경우, 자동 재 시작됩니다.
-       1. 프로세서에 정의되는 stage_id는 중복되지 않도록 주의 하셔야 합니다. (처리 하지 못하는 데이터가 전달될 수 있습니다)
-          > 예) ["lua.so+stage", "index.so+stage"]
+  1. [CLion](https://www.jetbrains.com/clion/)을 사용한 개발
+  1. Makefile 생성을 통한 개발
+  
+     ```console
+     $ cmake .
+     ``` 
+     를 통해, Makefile을 생성 후 빌드
        
-  ```sh
-#!/bin/sh
-
-exec ./single -c - $* << EOF
-{
-    "#services": {
-        "tcp":["0.0.0.0:8081"]
-    },
-    "#license": [ "DATUMFLUX CORP.", "xxxxxxxxxxxxxxxxxxxxx"],
-    "#router": [ 1500 ],
-    "#cluster": [ ":eth0", 18081, "127.0.0.1:28081"],
-    "#threads": [ 10, 10000 ],
-    "#startup":[ 
-        ["index.so+index"],
-        ["=route+route"],
-        ["=ticket+ticket"],
-        ["curl.so+curl"],
-        ["lua.so+stage"]
-    ],
-
-    "curl.so+agent": {
-        "user-agent": "STAGE Agent/1.0",
-        "verbose": 0,
-        "timeout": 10000
-    },
-
-    "lua.so": {
-        "%preload": "preload",
-        "%package": [ "package", "rollback", "[0]lib", "[0]" ],
-        "%odbc":  {
-            "DF_DEVEL": {
-                "DRIVER": "MySQL ODBC 8.0 Unicode Driver",
-                "SERVER": "...",
-                "DATABASE": "...",
-                "USER": "...",
-                "PASSWORD": "..."
-            }
-        },
-        "lua.so+stage": "start"
-    },
-    "=ticket+ticket": [
-        100000,
-        {
-            "odbc": 10
-        }
-    ],
-    "index.so+rank": "score/"
-}
-EOF
-  ```
-
-  2. 메인 스크립트 작성 
-
-  ```lua
--- v1/start.lua
--- 외부 연결을 준비 (필요에 따라 수정할수 있습니다.)
-local sp = broker.ready("tcp://0.0.0.0:8081?packet=4k,10k", function (socket, addr)
-
-    -- 데이터를 받으면 호출되는 함수를 등록한다.
-    return function (socket, data, addr)
-
-        stage.load("packet+" .. data.message, function (f)
-            local v = f(socket, data)
-            if v ~= nil then
-                socket.commit(v, addr);
-            end
-        end)
-        
-    end
-end);
-
-sp.expire = 3000; -- 3초 동안 데이터 발생이 없으면 닫기
-sp.close = function (socket)
-
-    -- 클라이언트 접속이 해제될때 호출된다.
-    stage.load("packet+__close", function (f)
-        f(socket);
-    end)
-end
-
-
-log4cxx.out("READY")
-return function () -- IDLE 함수 등록
-    return 1000; -- 다음 호출 시간 예약 (0 또는 반환이 없는 경우 중지)
-end;
-  ```
-  3. 패킷 스크립트 작성 
-
-  ```lua
--- v1/packet.lua
---
-
-return {
-    ["login"] = function (socket, data)
-    end
-}
-  ```
-
+>## 문의
+  * [데이텀플럭스 주식회사](http://datumflux.co.kr)
+  

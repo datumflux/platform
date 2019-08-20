@@ -19,40 +19,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
  */
-#ifndef __UTIME_H
-#  define __UTIME_H
+#ifndef __OBJECT_HPP
+#  define __OBJECT_HPP
 /*!
  * COPYRIGHT 2018-2019 DATUMFLUX CORP.
  *
- * \brief msec기반의 시간을 처리하기 위한 time_t 대응 함수
  * \author KANG SHIN-SUK <kang.shinsuk@datumflux.co.kr>
  */
-#include "typedef.h"
-#include <sys/time.h>
+#include <atomic>
 
-/*! \addtogroup core_utime
- *  @{
- */
-typedef uint64_t utime_t;
+#if defined(RELEASE)
+#  define OBJECT__TRACE()
+#else
+#  include <unistd.h>
+#  define OBJECT__TRACE()   fprintf(stderr, " * %s.%d: %s - %p\n", __FUNCTION__, getpid(), SIGN.c_str(), this)
+#endif
 
+struct ObjectRef {
+	ObjectRef(const char *sign)
+		: SIGN(sign)
+		, ref_(0) { OBJECT__TRACE(); }
+	virtual ~ObjectRef() { OBJECT__TRACE(); }
 
-/* utime: timeNow를 1/1000 sec 로 변환 */
-EXTRN utime_t utime( struct timeval timeNow);
+	virtual ObjectRef *Ref() { ++ref_; return this; }
+	virtual void       Unref() { if ((--ref_) <= 0) this->Dispose(); }
 
-/* utimeNow: 현재 시간에 대한 1/1000 sec를 반환한다. */
-EXTRN utime_t utimeNow( struct timeval *);
+	virtual int32_t    Count() const { return ref_; }
 
-/* utimeDiff: timeEnd시간과 timeStart시간의 차이를 반환 (1/1000 sec) */
-EXTRN utime_t utimeDiff( struct timeval timeStart, struct timeval timeEnd);
+	const std::string SIGN;
+protected:
+	virtual void Dispose() = 0;
 
-/* utimeTick: 현재 시간과 timeStart를 비교하여 차이를 반환 (1/1000 sec) */
-EXTRN utime_t utimeTick( struct timeval timeStart);
+private:
+	std::atomic<std::int32_t> ref_;
+};
+#undef OBJECT__TRACE
 
-/* utimeSleep: timeSleep 만큼 대기 한다. (1/1000 sec) */
-EXTRN int      utimeSleep( int timeSleep);
-
-/* utimeSpec: timeNow + msec = ts */
-EXTRN struct timespec *utimeSpec(struct timeval *timeNow, int msec, struct timespec *ts);
-
-/* @} */
 #endif

@@ -19,40 +19,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
  */
-#ifndef __UTIME_H
-#  define __UTIME_H
-/*!
- * COPYRIGHT 2018-2019 DATUMFLUX CORP.
- *
- * \brief msec기반의 시간을 처리하기 위한 time_t 대응 함수
- * \author KANG SHIN-SUK <kang.shinsuk@datumflux.co.kr>
- */
+#ifndef __WELL512_H
+#  define __WELL512_H
+
 #include "typedef.h"
-#include <sys/time.h>
 
-/*! \addtogroup core_utime
- *  @{
- */
-typedef uint64_t utime_t;
+#define WELL512_MAX             16
+
+struct _well512 {
+    unsigned long state[WELL512_MAX];
+    unsigned int  index;
+};
 
 
-/* utime: timeNow를 1/1000 sec 로 변환 */
-EXTRN utime_t utime( struct timeval timeNow);
+EXTRN void well512_srand(struct _well512 *r, unsigned long seed, long delta);
 
-/* utimeNow: 현재 시간에 대한 1/1000 sec를 반환한다. */
-EXTRN utime_t utimeNow( struct timeval *);
+EXTRN unsigned long well512_rand(struct _well512 *r);
+EXTRN unsigned long well512_range(struct _well512 *r, unsigned long l, unsigned long m);
+EXTRN unsigned long well512_max(struct _well512 *r, unsigned long m);
 
-/* utimeDiff: timeEnd시간과 timeStart시간의 차이를 반환 (1/1000 sec) */
-EXTRN utime_t utimeDiff( struct timeval timeStart, struct timeval timeEnd);
+EXTRN float well512_randf(struct _well512 *r);
 
-/* utimeTick: 현재 시간과 timeStart를 비교하여 차이를 반환 (1/1000 sec) */
-EXTRN utime_t utimeTick( struct timeval timeStart);
-
-/* utimeSleep: timeSleep 만큼 대기 한다. (1/1000 sec) */
-EXTRN int      utimeSleep( int timeSleep);
-
-/* utimeSpec: timeNow + msec = ts */
-EXTRN struct timespec *utimeSpec(struct timeval *timeNow, int msec, struct timespec *ts);
-
-/* @} */
 #endif

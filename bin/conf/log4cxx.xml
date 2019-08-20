@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<appender name="logConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} [%-5p] %m%n"/>
+		</layout>
+
+		<filter class="org.apache.log4j.filter.LevelMatchFilter">
+      		<param name="levelToMatch" value="WARN" />
+      		<param name="acceptOnMatch" value="true" />
+    	</filter>
+
+		<filter class="org.apache.log4j.filter.LevelMatchFilter">
+			<param name="levelToMatch" value="ERROR" />
+			<param name="acceptOnMatch" value="true" />
+		</filter>
+
+    	<!-- If it is not an info message, this filter will reject it -->
+    	<filter class="org.apache.log4j.filter.DenyAllFilter"/>
+	</appender>
+
+	<appender name="logRollingFileAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="logs/stage.log" />
+		<param name="append" value="true" />
+		<param name="MaxFileSize" value="500MB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} [%-5p] %m%n"/>
+		</layout>
+	</appender>
+
+	<appender name="logTimeRollingFileAppender" class="org.apache.log4j.rolling.RollingFileAppender">
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="fileNamePattern" value="logs/%d{yyyy-MM-dd}.log"/> <!--Dailly-->
+		</rollingPolicy>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} [%-5p] %m%n"/>
+		</layout>
+	</appender>
+
+  	<appender name="logTimeRollingFileAppender" class="org.apache.log4j.rolling.RollingFileAppender">
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="fileNamePattern" value="logs/%d{yyyy-MM-dd}.log"/> <!--Dailly-->
+		</rollingPolicy>
+		
+		<!-- If this filter accepts the message, it will be printed. That happens if this is an info message -->
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} [%-5p] %m%n"/>
+		</layout>
+	</appender>
+  
+	<root>
+		<level value="info" />
+		<appender-ref ref="logConsoleAppender"/>
+		<appender-ref ref="logRollingFileAppender"/>
+		<appender-ref ref="logTimeRollingFileAppender"/>
+	</root>
+
+	<category name="route" >
+		<level value ="info" />
+		<appender-ref ref="logTimeRollingFileAppender"/>
+	</category>
+
+	<category name="ticket" >
+		<level value ="info" />
+		<appender-ref ref="logTimeRollingFileAppender"/>
+	</category>
+
+	<category name="curl" >
+		<level value ="info" />
+		<appender-ref ref="logTimeRollingFileAppender"/>
+	</category>
+
+	<category name="lua" >
+		<level value ="info" />
+		<appender-ref ref="logTimeRollingFileAppender"/>
+	</category>
+
+	<category name="single" >
+		<level value ="info" />
+	</category>
+
+	<category name="usage" >
+		<level value ="off" />
+	</category>
+</log4j:configuration> 
