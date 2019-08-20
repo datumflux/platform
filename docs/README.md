@@ -218,7 +218,6 @@ exec ./single -c - $* << EOF
     "#services": {
         "tcp":["0.0.0.0:8081"]
     },
-    "#license": [ "DATUMFLUX CORP.", "xxxxxxxxxxxxxxxxxxxxx"],
     "#router": [ 1500 ],
     "#cluster": [ ":eth0", 18081, "127.0.0.1:28081"],
     "#threads": [ 10, 10000 ],
