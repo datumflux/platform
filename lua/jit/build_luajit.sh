@@ -25,3 +25,9 @@ cd usr/local
 
 rm -rf bin/man
 tar cf - . | (cd ../../../; tar xfp -)
+cd ../../../
+
+if [ -f lib/libluajit-5.1.so.2 ] && [ -d "../../bin/lib" ]; then
+    echo "Install libluajit-5.1.so.2"
+    cp lib/libluajit-5.1.so.2 ../../bin/lib
+fi

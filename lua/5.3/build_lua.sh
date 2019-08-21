@@ -59,4 +59,10 @@ cp ${SOURCE4} ROOT/usr/local/include
 cd ROOT/usr/local
 
 rm -rf share
-tar cf - . | (cd ../../../; tar xfp -)
+tar cf - . | (cd ../../../../; tar xfp -)
+cd ../../../../
+
+if [ -f lib/liblua-5.3.so ] && [ -d "../../bin/lib" ]; then
+	echo "Install liblua-5.3.so"
+	cp lib/liblua-5.3.so ../../bin/lib
+fi

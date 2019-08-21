@@ -82,6 +82,14 @@
   
 * #### 빌드
 
+  1. bin/lib 경로 생성
+     > lua 라이브러리가 설치될 경로를 생성합니다.
+     
+     ```console
+     $ mkdir bin/lib/lua
+     $ mkdir bin/lib/luajit
+     ``` 
+     
   1. lua/5.3 빌드
      ```console
      $ ./build_lua.sh
