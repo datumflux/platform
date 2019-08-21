@@ -52,8 +52,8 @@ odbc.new({
 	["DRIVER"] = "MySQL ODBC 8.0 ANSI Driver", -- /etc/odbcinst.ini에 정의
     ["SERVER"] = "localhost",
     ["DATABASE"] = "DF_DEVEL",
-    ["USER"] = "datumflux",
-    ["PASSWORD"] = "Sskang74@",
+    ["USER"] = "user",
+    ["PASSWORD"] = "password",
     [".executeTimeout"] = 1000,
     [".queryDriver"] = "mysql"
 }, function (adp)
