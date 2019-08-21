@@ -117,7 +117,7 @@
      디랙토리에 존재하는 test_....lua 파일을 연결하거나, start.lua를 생성합니다.
 
      ```console
-     $ ce package
+     $ cd package
      $ ln -s test_broker.lua start.lua
      $ cd ..
      $
