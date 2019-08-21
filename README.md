@@ -109,9 +109,21 @@
   
      ```console
      $ cmake .
+     $ make
      ``` 
      를 통해, Makefile을 생성 후 빌드
        
+  1. bin/package/start.lua 생성
+     디랙토리에 존재하는 test_....lua 파일을 연결하거나, start.lua를 생성합니다.
+
+     ```console
+     $ ce package
+     $ ln -s test_broker.lua start.lua
+     $ cd ..
+     $
+     $ ./start.sh
+     ``` 
+     
 >## 문의
   * [데이텀플럭스 주식회사](http://datumflux.co.kr)
   
