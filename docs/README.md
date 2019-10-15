@@ -136,7 +136,6 @@ end, { ... })
      |이름|자료형|역할|
      |:---:|:---:|:--- |
      |#services|object|프로세서간 공유가 필요한 네트워크 주소|
-     |#license|object|라이센스 설정 정보|
      |#router|array|라우팅 정보 설정|
      |#cluster|array|서버간 클러스터링 연결 정보|
      |#threads|array|쓰레드 설정 정보|
